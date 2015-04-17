@@ -1,0 +1,5 @@
+bower_components
+resources/public/scripts
+node_modules
+.lein-repl-history
+figwheel_server.log
