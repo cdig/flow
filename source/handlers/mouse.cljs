@@ -5,18 +5,33 @@
 ;; Deps √
 
 (ns handlers.mouse
-  (:require [app.messenger :as messenger]
+  (:require [app.db :as db]
+            [app.events :as events]
             [browser.mouse :as mouse]))
 
 (defn initialize! []
 
-  (messenger/register-event-handler! :mousemove
-    mouse/event->pos)
+  (events/register-event-handler!
+    "mousemove"
+    (fn [event]
+      (let [type (if (db/get-cache ::down?) :mouse-drag :mouse-move)
+            abs (mouse/event->pos event)
+            rel (merge-with - abs (db/get-cache ::abs))]
+        (when-not (and (zero? (:x rel))
+                       (zero? (:y rel)))
+          (db/set-cache! ::abs abs)
+          [type {:abs abs :rel rel}]))))
 
-  (messenger/register-event-handler! :mousedown
-    (fn [& _] {:down true}))
+  (events/register-event-handler!
+    "mousedown"
+    (fn [event]
+      (db/set-cache! ::down? true)
+      [:mouse-down {:down true}]))
 
-  (messenger/register-event-handler! :mouseup
-    (fn [& _] {:down false})))
+  (events/register-event-handler!
+    "mouseup"
+    (fn [event]
+      (db/set-cache! ::down? false)
+      [:mouse-up {:down false}])))
 
 (defonce initialized (do (initialize!) true))

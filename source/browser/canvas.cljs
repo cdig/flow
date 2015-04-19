@@ -89,8 +89,7 @@
     (set! (.-height canvas) h)
     context))
 
-(defn create! [w h]
+(defn create! []
   (-> (document/createElement! "canvas")
       document/appendChild!
-      canvas->context
-      (resize! w h)))
+      canvas->context))

@@ -1,11 +1,31 @@
-(ns app.entity
-  (:require [app.db :refer [next-id! state]]))
+;; Entities are the objects in our system.
+;; They are just a map of state, with an eid (Entity ID) to uniquely identify them.
 
-(defn create! [name?]
-  (let [eid (or name? (next-id! :eid))]
-    (reset! state
-      (assoc-in @state [:entities eid]
-        (merge
-          (@state :default-entity)
-          {:eid eid})))
+(ns app.entity
+  (:require [app.db :as db]
+            [app.id :as id]))
+
+(defn- make
+  "Make a new, empty Entity. This deserves to be a function, so that we have an easy place to see (and change) the default entity structure."
+  [eid]
+  {:eid eid})
+
+;; PUBLIC
+
+(defn create!
+  "Make and save a new Entity, optionally populated with a given map of default values. Returns the new entity's eid."
+  [defaults]
+  (let [eid (or (:eid defaults) (id/make-id! :eid))
+        entity (merge (make eid) defaults)]
+    (db/update-state! ::entities assoc eid entity)
     eid))
+
+(defn update!
+  "Update the entity."
+  [eid f & args]
+  (apply db/update-state! ::entities update eid f args))
+
+(defn all
+  "Returns a vec of all entities in the system."
+  []
+  (db/get-state ::entities))

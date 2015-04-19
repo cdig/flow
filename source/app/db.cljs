@@ -1,60 +1,54 @@
+;; Stores all the data used in our app.
+;; Data is organized into two groups.
+;; The "state" group is for data that should be persisted and restored.
+;; The "cache" group is for volatile data that can be regenerated on-demand.
+
 (ns app.db)
 
 ;; This is data that should be persisted
-(defonce state (atom {
-  
-  ;; Entities active in the system
-  ;; eid -> entity state (see default entity for structure)
-  :entities {}
-  
-  ;; Behaviours actively belonging to entities
-  ;; bid -> behaviour
-  :behaviours {}
-  
-  }))
+(def initial-state {})
+(defonce state (atom initial-state))
 
 ;; This is data that can be generated on the fly
-(defonce cache (atom {
-  
-  ;; Temporary: to get next anonymous entity ID
-  ;; Should use UUIDs
-  :next-eid 0
-  
-  ;; Temporary: to get next anonymous behaviour ID
-  ;; Should use UUIDs
-  :next-bid 0
-  
-  ;; Behaviour types available for creation
-  ;; bname -> behaviour template
-  :behaviour-templates {}
-  
-  ;; Default entity structure
-  ;; This is stored as data so that we can change it at runtime for debugging, etc
-  ;; All entities are created based on this structure
-  :default-entity {:eid nil
-                   :bids #{}}
-  
-  ;; Default behaviour structure
-  ;; This is stored as data so that we can change it at runtime for debugging, etc
-  ;; Behaviours merge this structure + template + custom values supplied at creation
-  :default-behaviour {:bid nil
-                      :bname nil
-                      :state {}}
-  
-  ;; Indexes for fast lookup
-  ; :message->bname->callback {}
-  :message->sname->callback {}
-  :bname->snames {} ;; snames is a set
-  :sname->bids {} ;; bids is a set
-  :bid->eid {}
-  }))
+(def initial-cache {})
+(defonce cache (atom initial-cache))
 
-;; Called with either the literal :eid or :bid
-;; Returns a new id of the form :eid-123 or :bid-123
-;; Temporary — should use UUIDs
-(defn next-id! [type]
-  (let [type-name (name type)
-        cache-key (keyword (str "next-" type-name))
-        id (keyword (str type-name "-" (@cache cache-key)))]
-    (swap! cache update cache-key inc)
-    id))
+;; FUNCTIONS
+
+(defn clear!
+  "Resets the DB state and cache to their initial values"
+  []
+  (reset! state initial-state)
+  (reset! cache initial-cache))
+
+
+(defn get-state
+  "Retreive a saved value. The first argument should be a namespaced keyword."
+  [k]
+  (get @state k))
+
+(defn set-state!
+  "Assign a saved value. The first argument should be a namespaced keyword. The second arg should be the new value."
+  [k v]
+  (swap! state assoc k v))
+
+(defn update-state!
+  "Update a saved value. The first argument should be a namespaced keyword. The second, a function that will be called with the current value for that keyword and any additional args."
+  [k f & args]
+  (apply swap! state update k f args))
+
+
+(defn get-cache
+  "Retreive a cached value. The first argument should be a namespaced keyword."
+  [k]
+  (get @cache k))
+
+(defn set-cache!
+  "Assign a cached value. The first argument should be a namespaced keyword. The second arg should be the new value."
+  [k v]
+  (swap! cache assoc k v))
+
+(defn update-cache!
+  "Update a cached value. The first argument should be a namespaced keyword. The second, a function that will be called with the current value for that keyword and any additional args."
+  [k f & args]
+  (apply swap! cache update k f args))
