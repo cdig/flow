@@ -29,3 +29,11 @@
   "Returns a vec of all entities in the system."
   []
   (db/get-state ::entities))
+
+(defn- entity->renderable
+  "Turns an entity into renderable data, which tells the surface what to draw."
+  [entity]
+  (merge
+    (:pos entity)
+    (:geo entity)
+    (:dye entity)))

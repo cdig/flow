@@ -6,16 +6,20 @@
 
 (ns browser.document)
 
-(def document js/document)
-(def body (.-body document))
+(def document (atom nil)) ;; js/document
+(def body (atom nil)) ;; (.-body document)
 
 ;; FUNCTIONS
 
 (defn createElement! [name]
-  (.createElement document "canvas"))
+  (.createElement @document "canvas"))
 
 ;; NICENESS
 
 (defn appendChild! [element]
-  (.appendChild body element)
+  (.appendChild @body element)
   element)
+
+(defn setup! [doc]
+  (reset! document doc)
+  (reset! body (.-body doc)))

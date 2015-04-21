@@ -5,7 +5,7 @@
 ;; Deps √
 
 (ns browser.events
-  (:require [browser.window :refer [window]]))
+  (:require [browser.window :as window]))
 
-(defn addEventListener! [type handler]
-  (.addEventListener window type handler))
+(defn addWindowListener! [type handler]
+  (window/addEventListener! type handler))

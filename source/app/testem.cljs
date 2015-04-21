@@ -1,19 +1,23 @@
 (ns app.testem
-  (:require [app.entity :as entity]))
+  (:require [app.entity :as entity]
+            [core.color :refer [random-color]]))
 
 (defn- xpos [i]
   (-> i
-      (mod 60)
-      (* 25)))
+      (mod 50)
+      (* 30)
+      (+ 15)))
 
 (defn- ypos [i]
   (-> i
-      (quot 60)
-      (* 25)))
+      (quot 50)
+      (* 30)
+      (+ 15)))
 
-(dotimes [i 2000]
-  (entity/create! {
-    :pos {:x (xpos i) :y (ypos i)}
-    :geo {:type :circle :r 5}
-    :dye {:fill "rgba(255, 255, 255, 0.5)"
-          :stroke "rgb(200, 200, 200)"}}))
+(defn setup! []
+  (dotimes [i 0]
+    (entity/create! {
+      :pos {:x (xpos i) :y (ypos i)}
+      :geo {:type :circle :r 8}
+      :dye {:fill (random-color)
+            :stroke "rgb(40, 40, 40)"}})))
