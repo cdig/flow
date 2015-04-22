@@ -12,7 +12,7 @@
             [handlers.all :as handlers]))
 
 (defn- tick! [dT]
-  (-> (events/drain-queue!)
+  (-> (events/drain-events!)
       (logics/update-world! dT)
       render/render-world!))
 

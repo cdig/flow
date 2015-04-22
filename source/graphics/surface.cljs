@@ -33,6 +33,27 @@
     (canvas/resize! context w h)
     (db/update-cache! key assoc :size [w h])))
 
+(defn- render-square!
+  [context {:keys [x y w]}]
+  (canvas/rect! context x y w w))
+
+(defn- render-rect!
+  [context {:keys [x y w h]}]
+  (canvas/rect! context x y w h))
+
+(defn- render-circle!
+  [context {:keys [x y r]}]
+  (canvas/arc! context x y r 0 TAU false))
+
+(defn- render-line!
+  [context {:keys [points]}]
+  (let [[[sx sy]] points]
+    (canvas/moveTo! context (+ sx 0.5) (+ sy 0.5)))
+  (doseq [[x y] (rest points)]
+    (canvas/lineTo! context (+ x 0.5) (+ y 0.5))))
+
+;; PUBLIC
+
 (defn render!
   "Render the given elements to the surface named by key, resizing if necessary."
   [key w h elements]
@@ -45,14 +66,15 @@
     ; (canvas/lineJoin! context "round")
     (canvas/lineWidth! context "3")
     
-    (doseq [{:keys [type stroke fill x y w h r] :as entity} elements]
+    (doseq [{:keys [type stroke fill] :as entity} elements]
       (canvas/beginPath! context)
       
       (case type
-        :square (canvas/rect! context x y w w)
-        :rect (canvas/rect! context x y w h)
-        :circle (canvas/arc! context x y r 0 TAU false)
-        (prn "Surface: Unknown Type" type "for" entity "in" elements "on surface" key))
+        :square (render-square! context entity)
+        :rect (render-rect! context entity)
+        :circle (render-circle! context entity)
+        :line (render-line! context entity)
+        (prn "Surface: Unknown Type" type "for" entity "on surface" key))
       
       (canvas/closePath! context)
 

@@ -15,7 +15,7 @@
       (+ 15)))
 
 (defn setup! []
-  (dotimes [i 0]
+  (dotimes [i 100]
     (entity/create! {
       :pos {:x (xpos i) :y (ypos i)}
       :geo {:type :circle :r 8}

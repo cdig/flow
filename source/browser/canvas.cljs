@@ -44,6 +44,10 @@
   (.rect context x y w h)
   context)
 
+(defn moveTo! [context x y]
+  (.moveTo context x y)
+  context)
+
 (defn lineTo! [context x y]
   (.lineTo context x y)
   context)

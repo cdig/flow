@@ -28,13 +28,13 @@
   (get @state k))
 
 (defn set-state!
-  "Assign a saved value. The first argument should be a namespaced keyword. The second arg should be the new value."
+  "Assign a saved value. The first argument should be a namespaced keyword. The second arg should be the new value. Returns the new value."
   [k v]
   (swap! state assoc k v)
   v)
 
 (defn update-state!
-  "Update a saved value. The first argument should be a namespaced keyword. The second, a function that will be called with the current value for that keyword and any additional args."
+  "Update a saved value. The first argument should be a namespaced keyword. The second, a function that will be called with the current value for that keyword and any additional args. Returns the new value."
   [k f & args]
   (let [v (apply f (get-state k) args)]
     (set-state! k v)
@@ -47,13 +47,13 @@
   (get @cache k))
 
 (defn set-cache!
-  "Assign a cached value. The first argument should be a namespaced keyword. The second arg should be the new value."
+  "Assign a cached value. The first argument should be a namespaced keyword. The second arg should be the new value. Returns the new value."
   [k v]
   (swap! cache assoc k v)
   v)
 
 (defn update-cache!
-  "Update a cached value. The first argument should be a namespaced keyword. The second, a function that will be called with the current value for that keyword and any additional args."
+  "Update a cached value. The first argument should be a namespaced keyword. The second, a function that will be called with the current value for that keyword and any additional args. Returns the new value."
   [k f & args]
   ; (apply swap! cache update k f args))
   (let [v (apply f (get-cache k) args)]

@@ -11,7 +11,7 @@
   "When stuff changes, draw it!"
   [news]
   
-  (when (:resize? news)
+  (when (:resize news)
         (db/set-cache! ::viewport-pos nil)
         (db/set-cache! ::entities nil))
   

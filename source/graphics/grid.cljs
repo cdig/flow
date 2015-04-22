@@ -24,7 +24,7 @@
 (defn generate [{:keys [x y z w h]}]
   (let [pitch 30
         major-every 5
-        major-size 2
+        major-size 3
         minor-size 1
         overhang (* 2 major-every)
         xsteps (+ overhang (quot w pitch))  ; extra rows for the edges of the screen
