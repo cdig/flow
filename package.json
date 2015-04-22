@@ -1,20 +1,11 @@
 {
-  "name": "whoot-camp",
-  "description": "A travelogue by Ivan & Freyja",
+  "name": "proto",
+  "description": "",
   "dependencies": {},
   "devDependencies": {
     "coffee-script": "^1.9.1",
-    "concurrent-transform": "^1.0.0",
-    "del": "^1.1.1",
     "gulp": "^3.8.11",
     "gulp-autoprefixer": "^2.1.0",
-    "gulp-changed": "^1.2.1",
-    "gulp-image-resize": "^0.6.0",
-    "gulp-imagemin": "^2.2.1",
     "gulp-sass": "^1.3.3"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/wehoo/wehoo.github.io.git"
   }
 }
