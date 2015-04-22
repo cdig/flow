@@ -25,6 +25,16 @@
   [eid f & args]
   (apply db/update-state! ::entities update eid f args))
 
+(defn destroy!
+  "Now you die!"
+  [eid]
+  (db/update-state! ::entities dissoc eid))
+
+(defn fetch
+  "Returns the entity given by eid."
+  [eid]
+  (get (db/get-state ::entities) eid))
+
 (defn all
   "Returns a vec of all entities in the system."
   []

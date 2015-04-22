@@ -46,11 +46,11 @@
   (canvas/arc! context x y r 0 TAU false))
 
 (defn- render-line!
-  [context {:keys [points]}]
+  [context {:keys [x y points]}]
   (let [[[sx sy]] points]
-    (canvas/moveTo! context (+ sx 0.5) (+ sy 0.5)))
-  (doseq [[x y] (rest points)]
-    (canvas/lineTo! context (+ x 0.5) (+ y 0.5))))
+    (canvas/moveTo! context (+ x (+ sx 0.5)) (+ y (+ sy 0.5))))
+  (doseq [[px py] (rest points)]
+    (canvas/lineTo! context (+ x (+ px 0.5)) (+ y (+ py 0.5)))))
 
 ;; PUBLIC
 

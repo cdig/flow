@@ -18,8 +18,9 @@
     ;; Handler
     (fn [event]
       (let [changed-key (keyboard/event->keyword event)
-            pressing (db/update-cache! ::pressing conj changed-key)]
-        [:key-down [changed-key pressing]]))
+            pressing (db/get-cache ::pressing)]
+        (when-not (get pressing changed-key) ;; Ignore key repeat
+          [:key-down [changed-key (db/update-cache! ::pressing conj changed-key)]])))
     ;; Merger
     (fn [older newer]
       newer))

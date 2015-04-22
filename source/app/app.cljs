@@ -24,6 +24,7 @@
   (browser/setup! win)
   (handlers/setup!)
   
+  (logics/setup!)
   (viewport/setup!)
   (testem/setup!)
   (engine/start! tick!))
