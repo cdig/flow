@@ -4,8 +4,8 @@
 ;; State –
 ;; Deps √
 
-(ns web.events
-  (:require [web.window :as window]))
+(ns browser.events
+  (:require [browser.window :as window]))
 
 (defn addWindowListener! [type handler]
   (window/addEventListener! type handler))

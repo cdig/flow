@@ -1,6 +1,6 @@
-(ns system.viewport
-  (:require [graphics.grid :as grid]
-            [web.window :as window]))
+(ns gui.viewport
+  (:require [gui.grid :as grid]
+            [browser.window :as window]))
 
 (def merge+ (partial merge-with +))
 (def empty-pos {:x 0 :y 0})

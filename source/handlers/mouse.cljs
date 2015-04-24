@@ -5,8 +5,8 @@
 ;; Deps √
 
 (ns handlers.mouse
-  (:require [system.events :as events]
-            [web.mouse :as mouse]))
+  (:require [app.events :as events]
+            [browser.mouse :as mouse]))
 
 (def empty-pos {:x 0 :y 0})
 (defonce a-abs (atom empty-pos))

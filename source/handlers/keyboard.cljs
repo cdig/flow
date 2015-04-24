@@ -5,8 +5,8 @@
 ;; Deps √
 
 (ns handlers.keyboard
-  (:require [system.events :as events]
-            [web.keyboard :as keyboard]))
+  (:require [app.events :as events]
+            [browser.keyboard :as keyboard]))
 
 (defonce pressing (atom #{}))
 

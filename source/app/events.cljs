@@ -7,8 +7,8 @@
 ;; To improve perf, if two events of the same kind occur in succession, we will collapse them to a single value in the log.
 ;; This means handlers also need to provide a function that can be used to merge two instances of an event together.
 
-(ns system.events
-  (:require [web.events :refer [addWindowListener!]]))
+(ns app.events
+  (:require [browser.events :refer [addWindowListener!]]))
 
 (defonce event-log (atom []))
 (defonce event-set (atom #{}))

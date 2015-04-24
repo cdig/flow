@@ -7,8 +7,8 @@
 ;; State X
 ;; Deps √
 
-(ns graphics.surface
-  (:require [web.canvas :as canvas]
+(ns render.surface
+  (:require [browser.canvas :as canvas]
             [core.math :refer [TAU]]))
 
 (defonce contexts (atom {}))
@@ -49,9 +49,9 @@
 (defn- render-line!
   [context {:keys [x y points]}]
   (let [[[sx sy]] points]
-    (canvas/moveTo! context (+ x (+ sx 0.5)) (+ y (+ sy 0.5))))
+    (canvas/moveTo! context (+ x sx) (+ y sy)))
   (doseq [[px py] (rest points)]
-    (canvas/lineTo! context (+ x (+ px 0.5)) (+ y (+ py 0.5)))))
+    (canvas/lineTo! context (+ x px) (+ y py))))
 
 ;; PUBLIC
 
@@ -63,8 +63,8 @@
     (set-size! surface w h)
     
     (canvas/clear! context)
-    ; (canvas/lineCap! context "round")
-    ; (canvas/lineJoin! context "round")
+    (canvas/lineCap! context "round")
+    (canvas/lineJoin! context "round")
     (canvas/lineWidth! context "3")
     
     (doseq [{:keys [type stroke fill] :as entity} elements]

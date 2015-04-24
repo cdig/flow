@@ -5,8 +5,8 @@
 ;; Deps √
 
 (ns handlers.resize
-  (:require [system.events :as events]
-            [web.window :as window]))
+  (:require [app.events :as events]
+            [browser.window :as window]))
 
 (defn setup! []
   (events/register-event-handler!

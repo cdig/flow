@@ -5,8 +5,8 @@
 ;; State –
 ;; Deps √
 
-(ns web.canvas
-  (:require [web.document :as document]))
+(ns browser.canvas
+  (:require [browser.document :as document]))
 
 ;; PROPERTY SETTERS
 

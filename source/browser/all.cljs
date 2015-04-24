@@ -1,6 +1,6 @@
-(ns web.all
-  (:require [web.document :as document]
-            [web.window :as window]))
+(ns browser.all
+  (:require [browser.document :as document]
+            [browser.window :as window]))
 
 (defn setup! [win]
   

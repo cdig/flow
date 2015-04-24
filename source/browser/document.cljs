@@ -4,7 +4,7 @@
 ;; State –
 ;; Deps —
 
-(ns web.document)
+(ns browser.document)
 
 (def document (atom nil)) ;; js/document
 (def body (atom nil)) ;; (.-body document)

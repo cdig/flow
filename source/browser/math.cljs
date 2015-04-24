@@ -4,7 +4,7 @@
 ;; State X
 ;; Deps —
 
-(ns web.math)
+(ns browser.math)
 
 (def Math js/Math)
 

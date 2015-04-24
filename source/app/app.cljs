@@ -7,21 +7,15 @@
             [handlers.all :as handlers]
             [logic.logics :as logics]
             [render.render :as render]
-            [system.engine :as engine]
-            [system.events :as events]
-            [system.id :as id]
-            [web.all :as web]))
+            [app.engine :as engine]
+            [app.events :as events]
+            [app.id :as id]
+            [browser.all :as browser]))
 
-(defonce world (atom {}))
+(defonce world (atom nil))
 
-(defn- save-world!
-  [new-world]
-  (reset! world new-world))
-
-(defn- safe-print
-  [world]
-  (print world)
-  world)
+(defn- save-world! [new-world] (reset! world new-world))
+(defn- safe-print [world] (print world) world)
 
 (defn- tick! [dT]
   (-> @world
@@ -29,24 +23,17 @@
       events/drain!
       logics/act
       render/act!
-      save-world!
-      ))
+      save-world!))
 
 (defn- setup! [window]
-  
-  ;; These two must run in this order, and come before the below
-  (web/setup! window)
+  (browser/setup! window)
   (handlers/setup!)
-  
-  (-> @world
+  (-> {}
       entity/setup
       testem/setup
       grid-cursor/setup
-      save-world!
-      )
-  
-  ;; We wrap tick! in an anonymous fn so that we can change it during dev and see our changes immediately.
-  (engine/start! #(tick! %)))
+      save-world!)
+  (engine/start! tick!))
   
 (defn initialize! []
   (setup! js/window))

@@ -2,15 +2,15 @@
 ;; In the current implementation, it wraps the browser raf.
 ;; It takes a callback function at the start, which it calls with a dT (seconds) on each tick.
 
-(ns system.engine
-  (:require [web.window :as window]))
+(ns app.engine
+  (:require [browser.window :as window]))
 
 (defonce last-time (atom 0))
 (defonce callback (atom nil))
 (defonce running (atom false))
 
 (defn- tick
-  "It's time to update the system. Calculate our dT since the last tick, and call the callback."
+  "It's time to update the app. Calculate our dT since the last tick, and call the callback."
   [time-ms]
   (let [time (/ time-ms 1000)
         dT (- time @last-time)]

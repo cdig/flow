@@ -1,4 +1,4 @@
-(ns system.id)
+(ns app.id)
 
 (defn make-id
   "Returns a 2 element vector with the updated world, and a new unique(ish) id with the given prefix."

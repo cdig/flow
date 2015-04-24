@@ -1,8 +1,8 @@
-;; Entities are the objects in our system.
+;; Entities are the objects in our app.
 ;; They are just a map of state, with an eid (Entity ID) to uniquely identify them.
 
 (ns entity.entity
-  (:require [system.id :as id]))
+  (:require [app.id :as id]))
 
 (defn- make
   "Make a new, empty Entity. This deserves to be a function, so that we have an easy place to see (and change) the default entity structure."

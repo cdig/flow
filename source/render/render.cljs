@@ -2,9 +2,9 @@
 
 (ns render.render
   (:require [entity.entity :as entity]
-            [system.viewport :as viewport]
-            [web.window :as window]
-            [graphics.surface :as surface]))
+            [gui.viewport :as viewport]
+            [browser.window :as window]
+            [render.surface :as surface]))
 
 (defonce prev-viewport (atom nil))
 (defonce prev-entities (atom nil))

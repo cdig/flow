@@ -2,7 +2,7 @@
   (:require [entity.entity :as entity]
             [entity.grid-cursor :as grid-cursor]
             [entity.line :as line]
-            [system.viewport :as viewport]))
+            [gui.viewport :as viewport]))
 
 ;; PERF HELPERS
 

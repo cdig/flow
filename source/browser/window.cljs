@@ -4,7 +4,7 @@
 ;; State –
 ;; Deps —
 
-(ns web.window)
+(ns browser.window)
 
 (def window (atom nil)) ;; js/window
 
