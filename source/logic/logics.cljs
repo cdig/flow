@@ -1,4 +1,4 @@
-;; Based on the GUI instructions from the inputs processing, update all the entities in the world.
+;; Based on the GUI instructions from the inputs processing, update all the objects in the world.
 
 (ns logic.logics
   (:require [logic.inputs :as inputs]

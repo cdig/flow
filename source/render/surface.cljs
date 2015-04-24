@@ -67,15 +67,15 @@
     (canvas/lineJoin! context "round")
     (canvas/lineWidth! context "3")
     
-    (doseq [{:keys [type stroke fill] :as entity} elements]
+    (doseq [{:keys [type stroke fill] :as object} elements]
       (canvas/beginPath! context)
       
       (case type
-        :square (render-square! context entity)
-        :rect (render-rect! context entity)
-        :circle (render-circle! context entity)
-        :line (render-line! context entity)
-        (prn "Surface: Unknown Type" type "for" entity "on surface" key))
+        :square (render-square! context object)
+        :rect (render-rect! context object)
+        :circle (render-circle! context object)
+        :line (render-line! context object)
+        (prn "Surface: Unknown Type" type "for" object "on surface" key))
       
       (canvas/closePath! context)
 

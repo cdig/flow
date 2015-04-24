@@ -1,5 +1,5 @@
-(ns entity.testem
-  (:require [entity.entity :as entity]
+(ns object.testem
+  (:require [object.object :as object]
             [core.color :refer [random-color]]))
 
 (defn- xpos [i]
@@ -14,9 +14,9 @@
       (* 30)
       (+ 15)))
 
-(defn create-entity
+(defn create-object
   [world i]
-  (entity/create
+  (object/create
     world
     {:pos {:x (xpos i) :y (ypos i)}
      :geo {:type :circle :r 8}
@@ -27,4 +27,4 @@
   (loop [i (dec 100) world world]
     (if (neg? i)
         world
-        (recur (dec i) (create-entity world i)))))
+        (recur (dec i) (create-object world i)))))

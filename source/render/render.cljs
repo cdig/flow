@@ -1,19 +1,21 @@
-;; The render system is responsible for orchestrating how our entities get drawn to the screen. It takes the entities that we have, turns their data into drawing instructions, and feeds that data to a renderable surface, which does the side-effectful drawing work.
+;; The render system is responsible for orchestrating how our objects get drawn to the screen. It takes the objects that we have, turns their data into drawing instructions, and feeds that data to a renderable surface, which does the side-effectful drawing work.
 
 (ns render.render
   (:require [entity.entity :as entity]
+            [object.object :as object]
             [gui.viewport :as viewport]
             [browser.window :as window]
             [render.surface :as surface]))
 
 (defonce prev-viewport (atom nil))
+(defonce prev-objects (atom nil))
 (defonce prev-entities (atom nil))
 
 (defn check-resize!
   [world]
   (when (get-in world [:event-set :resize])
     (reset! prev-viewport nil)
-    (reset! prev-entities nil)))
+    (reset! prev-objects nil)))
 
 (defn render-viewport!
   [world]
@@ -25,6 +27,17 @@
         (window/width)
         (window/height)
         (viewport/renderable world)))))
+
+(defn render-objects!
+  [world]
+  (let [objects (object/all world)]
+    (when-not (= objects @prev-objects)
+      (reset! prev-objects objects)
+      (surface/render!
+        ::objects-layer
+        (window/width)
+        (window/height)
+        (map object/object->renderable (vals objects))))))
 
 (defn render-entities!
   [world]
@@ -43,5 +56,6 @@
   [world]
   (check-resize! world)
   (render-viewport! world)
+  (render-objects! world)
   (render-entities! world)
   world)

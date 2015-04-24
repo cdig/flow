@@ -1,13 +1,21 @@
 (ns logic.output
   (:require [app.undo :as undo]
-            [entity.entity :as entity]
+            [object.object :as object]
             [entity.grid-cursor :as grid-cursor]
-            [entity.line :as line]
+            [object.line :as line]
             [gui.viewport :as viewport]))
 
-(defonce prev-entities (atom nil))
+(defonce prev-objects (atom nil))
 
-;; PERF HELPERS
+;; HELPERS
+
+(defn save-state
+  [world]
+  (let [objects (object/all world)]
+    (when (not= @prev-objects objects)
+      (reset! prev-objects objects)
+      (undo/save! objects))
+    world))
 
 (defn merge+
   [old new]
@@ -17,18 +25,18 @@
   [world event-data]
   (viewport/move-pos world (:rel event-data)))
 
-(defn- move-all-entities
+(defn- move-all-objects
   [world event-data]
-  (let [entities (entity/all world)]
+  (let [objects (object/all world)]
     (loop [world world
-           [eid ent] (first entities)
-           entities (rest entities)]
+           [oid ent] (first objects)
+           objects (rest objects)]
       (if (nil? ent)
           world
           (recur
-            (entity/save world (update ent :pos merge+ (:rel event-data)))
-            (first entities)
-            (rest entities))))))
+            (object/save world (update ent :pos merge+ (:rel event-data)))
+            (first objects)
+            (rest objects))))))
 
 ;; ACTIONS
 
@@ -38,7 +46,7 @@
            (= event-type :mouse-drag))
       (-> world
           (move-viewport event-data)
-          (move-all-entities event-data))
+          (move-all-objects event-data))
       world))
 
 (defn- draw-lines
@@ -48,18 +56,18 @@
 
       :mouse-down (when (= (:mode world) :drawing)
                     (let [{{x :x y :y} :abs} event-data
-                          [w e eid] (line/create-and-use world [x y] [x y])]
-                      (assoc w ::drawing eid)))
+                          [world e oid] (line/create-and-use world [x y] [x y])]
+                      (assoc world ::drawing oid)))
 
-      :mouse-drag (when-let [line-eid (::drawing world)]
+      :mouse-drag (when-let [line-oid (::drawing world)]
                     (let [{{x :x y :y} :abs} event-data]
-                      (line/move-tail world line-eid [x y])))
+                      (line/move-tail world line-oid [x y])))
 
-      :mouse-up (when-let [line-eid (::drawing world)]
-                  (let [w (assoc world ::drawing nil)]
-                    (if (zero? (line/length world line-eid))
-                      (entity/destroy w line-eid)
-                      w)))
+      :mouse-up (when-let [line-oid (::drawing world)]
+                  (let [world (assoc world ::drawing nil)]
+                    (if (zero? (line/length world line-oid))
+                      (object/destroy world line-oid)
+                      (save-state world))))
 
       nil)
     world))
@@ -73,7 +81,7 @@
 (defn- move-cursor
   [world [event-type event-data]]
   (if (and (= (:mode world) :drawing)
-           (or (= event-type :mouse-move)
+           (or (= event-type :mouse-move) ;; We also want to add key-down here, but we need access to current mouse state.
                (= event-type :mouse-drag)))
       (grid-cursor/move world event-data)
       world))
@@ -86,23 +94,23 @@
 
 (defn handle-undo
   [world]
-  (case (:action world)
+  (or
+    (case (:action world)
 
-    :undo
-      (->> (undo/undo!)
-           (reset! prev-entities)
-           (entity/populate world))
-    
-    :redo
-      (->> (undo/redo!)
-           (reset! prev-entities)
-           (entity/populate world))
-    
-    (let [entities (entity/all world)]
-      (when (not= @prev-entities entities)
-        (reset! prev-entities entities)
-        (undo/save! entities))
-      world)))
+      :undo
+        (when-let [new-state (undo/undo!)]
+          (->> new-state
+               (reset! prev-objects)
+               (object/populate world)))
+      
+      :redo
+        (when-let [new-state (undo/redo!)]
+          (->> new-state
+               (reset! prev-objects)
+               (object/populate world)))
+      
+      nil)
+    world))
 
 ; PUBLIC
 
@@ -114,5 +122,4 @@
       (viewport-nav event)
       (draw-lines event)
       (show-cursor event)
-      handle-undo
-      ))
+      handle-undo))

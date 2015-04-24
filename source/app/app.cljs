@@ -1,21 +1,24 @@
  ;; One app.cljs to rule them all!
 
 (ns ^:figwheel-always app.app
-  (:require [entity.entity :as entity]
-            [entity.grid-cursor :as grid-cursor]
-            [entity.testem :as testem]
-            [handlers.all :as handlers]
-            [logic.logics :as logics]
-            [render.render :as render]
-            [app.engine :as engine]
+  (:require [app.engine :as engine]
             [app.events :as events]
             [app.id :as id]
-            [browser.all :as browser]))
+            [app.undo :as undo]
+            [browser.all :as browser]
+            [entity.entity :as entity]
+            [entity.grid-cursor :as grid-cursor]
+            [handlers.all :as handlers]
+            [logic.logics :as logics]
+            [object.object :as object]
+            [object.testem :as testem]
+            [render.render :as render]))
 
 (defonce world (atom nil))
 
-(defn- save-world! [new-world] (reset! world new-world))
-(defn- safe-print [world] (print world) world)
+(defn- save-world! [w] (reset! world w))
+(defn- save-state! [w] (undo/save! (object/all w)) w)
+(defn- safe-print [w] (print w) w)
 
 (defn- tick! [dT]
   (-> @world
@@ -30,9 +33,11 @@
   (handlers/setup!)
   (-> {}
       entity/setup
-      testem/setup
       grid-cursor/setup
-      save-world!)
+      object/setup
+      testem/setup
+      save-world!
+      save-state!)
   (engine/start! tick!))
   
 (defn initialize! []

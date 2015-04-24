@@ -1,11 +1,10 @@
-;; Entities are the objects in our app.
-;; They are just a map of state, with an eid (Entity ID) to uniquely identify them.
+;; Entities are the GUI equivalent of Objects; a map of state, with an eid (Entity ID) to uniquely identify them.
 
 (ns entity.entity
   (:require [app.id :as id]))
 
 (defn- make
-  "Make a new, empty Entity. This deserves to be a function, so that we have an easy place to see (and change) the default entity structure."
+  "Make a new, empty entity. This deserves to be a function, so that we have an easy place to see (and change) the default entity structure."
   [eid]
   {:eid eid})
 
@@ -18,7 +17,7 @@
 ;; PUBLIC
 
 (defn save
-  "Takes a world and an entitiy, and saves the entity into the world. Returns the updated world."
+  "Takes a world and an entity, and saves the entity into the world. Returns the updated world."
   [world entity]
   (assoc-in world [::entities (:eid entity)] entity))
 
