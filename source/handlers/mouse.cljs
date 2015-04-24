@@ -5,11 +5,13 @@
 ;; Deps √
 
 (ns handlers.mouse
-  (:require [app.db :as db]
-            [app.events :as events]
-            [browser.mouse :as mouse]))
+  (:require [system.events :as events]
+            [web.mouse :as mouse]))
 
 (def empty-pos {:x 0 :y 0})
+(defonce a-abs (atom empty-pos))
+(defonce a-delta (atom empty-pos))
+(defonce a-down? (atom false))
 
 ;; HELPERS
 
@@ -23,13 +25,13 @@
   "Extract the new abs, rel, and delta positions from the mouse event. For perf, returns nil if there was no change since last call. When desired, we can reset the delta to 0, which always returns a new value, never nil."
   [event reset-delta?]
   (let [abs (mouse/event->pos event)
-        rel (merge-with - abs (db/get-cache ::abs))
+        rel (merge-with - abs @a-abs)
         delta (if reset-delta?
                   empty-pos
-                  (merge-with + rel (db/get-cache ::delta)))]
+                  (merge-with + rel @a-delta))]
     (when (or reset-delta? (has-moved? rel))
-      (db/set-cache! ::abs abs)
-      (db/set-cache! ::delta delta)
+      (reset! a-abs abs)
+      (reset! a-delta delta)
       {:abs abs
        :rel rel
        :delta delta})))
@@ -38,15 +40,11 @@
 
 (defn setup! []
   
-  (db/set-cache! ::abs empty-pos)
-  (db/set-cache! ::delta empty-pos)
-  (db/set-cache! ::down? false)
-  
   (events/register-event-handler!
     "mousemove"
     ;; Handler
     (fn [event]
-      (let [type (if (db/get-cache ::down?) :mouse-drag :mouse-move)
+      (let [type (if @a-down? :mouse-drag :mouse-move)
             data (update-mouse-position! event false)]
         [type data]))
     ;; Merger
@@ -57,9 +55,9 @@
     "mousedown"
     ;; Handler
     (fn [event]
-      (when-not (db/get-cache ::down?) ;; Ignore unexpected mousedowns — this was written defensively, not as a bugfix
+      (when-not @a-down? ;; Ignore unexpected mousedowns — this was written defensively, not as a bugfix
         (let [data (update-mouse-position! event true)]
-          (db/set-cache! ::down? true)
+          (reset! a-down? true)
           [:mouse-down data])))
     ;; Merger
     (fn [older newer]
@@ -69,9 +67,9 @@
     "mouseup"
     ;; Handler
     (fn [event]
-      (when (db/get-cache ::down?) ;; Ignore unexpected mouseups — this was written defensively, not as a bugfix
+      (when @a-down? ;; Ignore unexpected mouseups — this was written defensively, not as a bugfix
         (let [data (update-mouse-position! event true)]
-        (db/set-cache! ::down? false)
+        (reset! a-down? false)
         [:mouse-up data])))
     ;; Merger
     (fn [older newer]

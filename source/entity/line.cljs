@@ -1,7 +1,6 @@
 (ns entity.line
-  (:require [app.entity :as entity]
+  (:require [entity.entity :as entity]
             [core.math :refer [round sqrt]]))
-
 
 (defn- snap [[x y]]
   [(* (round (/ x 30)) 30)
@@ -17,30 +16,44 @@
         y (- ay by)]
     (sqrt (+ (* x x) (* y y)))))
 
+(defn- length-reduce
+  [[total prev] point]
+  (if (nil? prev)
+      [total point]
+      [(+ total (distance-between prev point)) point]))
+
 ;; PUBLIC
 
-(defn create!
-  "Make and save a new line Entity."
-  [& points]
-  (entity/create! {:geo {:type :line :points (snap-points points)}
-                   :dye {:stroke "#CCC"}}))
+(defn create-and-use
+  "Make a new line Entity. Takes a world and many points. Returns a 3 element vector with the updated world, the new entity, and its eid."
+  [world & points]
+  (entity/create-and-use world
+                 {:geo {:type :line :points (snap-points points)}
+                  :dye {:stroke "#CCC"}}))
 
-(defn edit!
-  "Edit and save an existing line."
-  [eid & points]
-  (entity/update! eid assoc-in [:geo :points] (snap-points points)))
+(defn create
+  "Make a new line Entity. Takes a world and many points. Returns the updated world."
+  [world & points]
+  (entity/create world
+                 {:geo {:type :line :points (snap-points points)}
+                  :dye {:stroke "#CCC"}}))
 
-(defn move-tail!
-  "Move the tail of an existing line."
-  [eid new-tail]
-  (entity/update! eid update-in [:geo :points] #(conj (pop %) (snap new-tail))))
+(defn edit
+  "Edit and save an existing line. Takes a world, an eid, and many points. Returns the updated world."
+  [world eid & points]
+  (let [entity (entity/fetch world eid)]
+    (entity/save world (assoc-in entity [:geo :points] (snap-points points)))))
+
+(defn move-tail
+  "Move the tail of an existing line. Takes a world, an eid, and many points. Returns the updated world."
+  [world eid new-tail]
+  (let [entity (entity/fetch world eid)]
+    (entity/save world (update-in entity [:geo :points] #(conj (pop %) (snap new-tail))))))
 
 (defn length
-  "Get the length of the line given by eid."
-  [eid]
-  (first (reduce (fn [[total prev] point]
-                   (if (nil? prev)
-                       [total point]
-                       [(+ total (distance-between prev point)) point]))
+  "Takes a world and a line's eid, and returns the length of the line."
+  ;; We could probably better write this with loop/recur rather than reduce
+  [world eid]
+  (first (reduce length-reduce
                  [0 nil]
-                 (get-in (entity/fetch eid) [:geo :points]))))
+                 (get-in (entity/fetch world eid) [:geo :points]))))

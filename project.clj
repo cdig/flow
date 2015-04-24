@@ -1,7 +1,7 @@
 (defproject app ""
   
   :dependencies [[org.clojure/clojure "1.6.0"]
-                 [org.clojure/clojurescript "0.0-3208"]
+                 [org.clojure/clojurescript "0.0-3211"]
                  [figwheel "0.2.6"]
                  [expectations "2.1.1"]]
   

@@ -3,7 +3,7 @@
 ;; Deps √
 
 (ns core.math
-  (:require [browser.math :as math]))
+  (:require [web.math :as math]))
 
 (defn normalize [in inMin inMax]
   (/ (- in inMin)

@@ -5,22 +5,20 @@
 ;; Deps √
 
 (ns handlers.keyboard
-  (:require [app.db :as db]
-            [app.events :as events]
-            [browser.keyboard :as keyboard]))
+  (:require [system.events :as events]
+            [web.keyboard :as keyboard]))
+
+(defonce pressing (atom #{}))
 
 (defn setup! []
-  
-  (db/set-cache! ::pressing #{})
   
   (events/register-event-handler!
     "keydown"
     ;; Handler
     (fn [event]
-      (let [changed-key (keyboard/event->keyword event)
-            pressing (db/get-cache ::pressing)]
-        (when-not (get pressing changed-key) ;; Ignore key repeat
-          [:key-down [changed-key (db/update-cache! ::pressing conj changed-key)]])))
+      (let [changed-key (keyboard/event->keyword event)]
+        (when-not (get @pressing changed-key) ;; Ignore key repeat
+          [:key-down [changed-key (swap! pressing conj changed-key)]])))
     ;; Merger
     (fn [older newer]
       newer))
@@ -29,9 +27,8 @@
     "keyup"
     ;; Handler
     (fn [event]
-      (let [changed-key (keyboard/event->keyword event)
-            pressing (db/update-cache! ::pressing disj changed-key)]
-        [:key-up [changed-key pressing]]))
+      (let [changed-key (keyboard/event->keyword event)]
+        [:key-up [changed-key (swap! pressing disj changed-key)]]))
     ;; Merger
     (fn [older newer]
       newer)))

@@ -4,7 +4,7 @@
 ;; State X
 ;; Deps —
 
-(ns browser.keyboard)
+(ns web.keyboard)
 
 ;; NICENESS
 

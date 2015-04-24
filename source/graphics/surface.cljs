@@ -8,9 +8,10 @@
 ;; Deps √
 
 (ns graphics.surface
-  (:require [app.db :as db]
-            [browser.canvas :as canvas]
+  (:require [web.canvas :as canvas]
             [core.math :refer [TAU]]))
+
+(defonce contexts (atom {}))
 
 (defn- create!
   "Create a new surface object and cache it by key."
@@ -18,20 +19,20 @@
   (let [surface {:key key
                  :context (canvas/create!)
                  :size nil}]
-    (db/set-cache! key surface)
+    (swap! contexts assoc key surface)
     surface))
 
 (defn get-or-create!
   "Get the surface for the given key if it exists. Otherwise, create it."
   [key]
-  (or (db/get-cache key) (create! key)))
+  (or (get @contexts key) (create! key)))
 
 (defn- set-size!
   "Make sure the given surface matches the given size"
   [{:keys [key size context]} w h]
   (when-not (= [w h] size)
     (canvas/resize! context w h)
-    (db/update-cache! key assoc :size [w h])))
+    (swap! contexts assoc-in [key :size] [w h])))
 
 (defn- render-square!
   [context {:keys [x y w]}]

@@ -4,7 +4,7 @@
 ;; State X
 ;; Deps —
 
-(ns browser.mouse)
+(ns web.mouse)
 
 ;; NICENESS
 
