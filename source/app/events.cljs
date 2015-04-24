@@ -45,6 +45,7 @@
   [event-name handler merger]
   (addWindowListener!
     event-name
-    #(-> %
-         handler
-         (enqueue-event! merger))))
+    (fn [e]
+      ; (.preventDefault e) ;; Causes the mouse to flicker
+      (.stopPropagation e)
+      (enqueue-event! (handler e) merger))))

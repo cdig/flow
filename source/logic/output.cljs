@@ -1,8 +1,11 @@
 (ns logic.output
-  (:require [entity.entity :as entity]
+  (:require [app.undo :as undo]
+            [entity.entity :as entity]
             [entity.grid-cursor :as grid-cursor]
             [entity.line :as line]
             [gui.viewport :as viewport]))
+
+(defonce prev-entities (atom nil))
 
 ;; PERF HELPERS
 
@@ -81,11 +84,35 @@
       set-cursor
       (move-cursor event)))
 
+(defn handle-undo
+  [world]
+  (case (:action world)
+
+    :undo
+      (->> (undo/undo!)
+           (reset! prev-entities)
+           (entity/populate world))
+    
+    :redo
+      (->> (undo/redo!)
+           (reset! prev-entities)
+           (entity/populate world))
+    
+    (let [entities (entity/all world)]
+      (when (not= @prev-entities entities)
+        (reset! prev-entities entities)
+        (undo/save! entities))
+      world)))
+
 ; PUBLIC
+
+(defn- safe-print [world] (print world) world)
 
 (defn act
   [world event]
   (-> world
       (viewport-nav event)
       (draw-lines event)
-      (show-cursor event)))
+      (show-cursor event)
+      handle-undo
+      ))

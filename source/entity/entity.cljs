@@ -37,6 +37,11 @@
   [world]
   (::entities world))
 
+(defn populate
+  "Takes a world and a map of entities. Returns a world that only contains those entities."
+  [world entities]
+  (assoc world ::entities entities))
+
 (defn entity->renderable
   "Turns an entity into renderable data, which tells the surface what to draw."
   [entity]

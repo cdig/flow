@@ -10,7 +10,7 @@
       (inputs/act event)
       (output/act event)))
 
-;; MAIN
+;; Main
 
 (defn act
   "Loop over all the events, and update the world accordingly."
