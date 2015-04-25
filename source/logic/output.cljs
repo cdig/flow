@@ -1,10 +1,11 @@
 (ns logic.output
   (:require [app.undo :as undo]
             [object.object :as object]
-            [entity.grid-cursor :as grid-cursor]
+            [gui.grid-cursor :as grid-cursor]
             [object.line :as line]
             [gui.viewport :as viewport]))
 
+;; I don't think I need prev-objects anymore, since undo/save! does a diff on prev
 (defonce prev-objects (atom nil))
 
 ;; HELPERS

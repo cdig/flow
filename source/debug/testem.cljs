@@ -1,4 +1,4 @@
-(ns object.testem
+(ns debug.testem
   (:require [object.object :as object]
             [core.color :refer [random-color]]))
 

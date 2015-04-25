@@ -1,4 +1,4 @@
-(ns entity.grid-cursor
+(ns gui.grid-cursor
   (:require [entity.entity :as entity]
             [core.math :refer [round]]))
 

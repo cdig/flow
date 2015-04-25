@@ -1,6 +1,5 @@
-;; The engine manages the run loop for our app.
+;; The engine holds the state for the run loop for our app.
 ;; In the current implementation, it wraps the browser raf.
-;; It takes a callback function at the start, which it calls with a dT (seconds) on each tick.
 
 (ns app.engine
   (:require [browser.window :as window]))

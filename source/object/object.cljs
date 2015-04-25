@@ -1,7 +1,7 @@
 ;; Objects are just a map of state, with an oid (Object ID) to uniquely identify them.
 
 (ns object.object
-  (:require [app.id :as id]))
+  (:require [core.id :as id]))
 
 (defn- make
   "Make a new, empty object. This deserves to be a function, so that we have an easy place to see (and change) the default object structure."

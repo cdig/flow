@@ -1,7 +1,7 @@
 ;; Entities are the GUI equivalent of Objects; a map of state, with an eid (Entity ID) to uniquely identify them.
 
 (ns entity.entity
-  (:require [app.id :as id]))
+  (:require [core.id :as id]))
 
 (defn- make
   "Make a new, empty entity. This deserves to be a function, so that we have an easy place to see (and change) the default entity structure."

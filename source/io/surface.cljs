@@ -7,7 +7,7 @@
 ;; State X
 ;; Deps √
 
-(ns render.surface
+(ns io.surface
   (:require [browser.canvas :as canvas]
             [core.math :refer [TAU]]))
 
