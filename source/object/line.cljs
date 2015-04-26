@@ -1,3 +1,7 @@
+;; A line SHOULD be a facet with 2 properties: start and end; both of which are other entities with a "pos"
+
+
+
 (ns object.line
   (:require [object.object :as object]
             [core.math :refer [round sqrt]]))

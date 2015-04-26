@@ -1,5 +1,5 @@
 (ns gui.viewport
-  (:require [gui.grid :as grid]
+  (:require [facet.geo.grid :as grid]
             [browser.window :as window]))
 
 (def merge+ (partial merge-with +))

@@ -2,7 +2,7 @@
 ;; State X
 ;; Deps X
 
-(ns gui.grid)
+(ns facet.geo.grid)
 
 (defn dot-position [thickness pitch step-index offset major-every]
   (-> step-index
@@ -36,3 +36,8 @@
            :x (dot-position size pitch xstep x major-every)
            :y (dot-position size pitch ystep y major-every)
            :w size}))))
+
+(defn create
+  "Creates a grid facet. Takes a world, facet id, and initial value. Returns the updated world."
+  [world fid init]
+  world)

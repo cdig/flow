@@ -3,6 +3,7 @@
 (ns app.render
   (:require [entity.entity :as entity]
             [object.object :as object]
+            [app.thing :as thing]
             [gui.viewport :as viewport]
             [browser.window :as window]
             [io.surface :as surface]))
@@ -32,9 +33,14 @@
   (render! ::viewport
            (viewport/get-pos world)
            (viewport/renderable world))
-  (render! ::objects
+  (render! ::object
            (object/all world)
            (map object/object->renderable (vals (object/all world))))
-  (render! ::entities
+  (render! ::entity
            (entity/all world)
-           (map entity/entity->renderable (vals (entity/all world)))))
+           (map entity/entity->renderable (vals (entity/all world))))
+  (render! ::thing
+           (thing/all world)
+           (map thing/thing->renderable (vals (thing/all world))))
+  
+  world)

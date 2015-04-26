@@ -1,5 +1,6 @@
 (ns debug.testem
   (:require [object.object :as object]
+            [app.thing :as thing]
             [core.color :refer [random-color]]))
 
 (defn- xpos [i]
@@ -23,8 +24,16 @@
      :dye {:fill (random-color)
            :stroke "rgb(40, 40, 40)"}}))
 
+(defn create-thing
+  [world i]
+  (thing/create world {:grid-pos [(xpos i) (ypos i)]
+                       :layer :user
+                       :circle 8
+                       :dye [:random-fill
+                             [:stroke-rgb 40]]}))
+
 (defn setup [world]
-  (loop [i (dec 100) world world]
+  (loop [i (dec 10) world world]
     (if (neg? i)
         world
         (recur (dec i) (create-object world i)))))

@@ -1,18 +1,12 @@
 ;; Entities are the GUI equivalent of Objects; a map of state, with an eid (Entity ID) to uniquely identify them.
 
 (ns entity.entity
-  (:require [core.id :as id]))
+  (:require [app.ider :as ider]))
 
 (defn- make
   "Make a new, empty entity. This deserves to be a function, so that we have an easy place to see (and change) the default entity structure."
   [eid]
   {:eid eid})
-
-(defn- get-eid
-  [world {eid :eid}]
-  (if eid
-      [world eid]
-      (id/make-id world :eid)))
 
 ;; PUBLIC
 
@@ -50,11 +44,11 @@
     (:dye entity)))
 
 (defn create-and-use
-  "Create a new entity. Takes a world and a template entity. Returns a three element vector with the updated world, the new entity, and its eid."
+  "Create a new entity. Takes a world and a template entity. Returns a three element vector with the updated world, the new entity, and its eid. DEPRECATED — if you care about using the entity, you should make the ID yourself, and hang on to it."
   [world template]
-  (let [[new-world eid] (get-eid world template)
+  (let [eid (or (:eid template) (ider/get-next! :eid))
         entity (merge (make eid) template)]
-    [(save new-world entity) entity eid]))
+    [(save world entity) entity eid]))
 
 (defn create
   "Create a new entity. Takes a world and a template entity. Returns the updated world. To also get the new entity, use the function create-and-use instead."

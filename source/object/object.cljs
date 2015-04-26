@@ -1,18 +1,12 @@
 ;; Objects are just a map of state, with an oid (Object ID) to uniquely identify them.
 
 (ns object.object
-  (:require [core.id :as id]))
+  (:require [app.ider :as ider]))
 
 (defn- make
   "Make a new, empty object. This deserves to be a function, so that we have an easy place to see (and change) the default object structure."
   [oid]
   {:oid oid})
-
-(defn- get-oid
-  [world {oid :oid}]
-  (if oid
-      [world oid]
-      (id/make-id world :oid)))
 
 ;; PUBLIC
 
@@ -50,11 +44,11 @@
     (:dye object)))
 
 (defn create-and-use
-  "Create a new object. Takes a world and a template object. Returns a three element vector with the updated world, the new object, and its oid."
+  "Create a new object. Takes a world and a template object. Returns a three element vector with the updated world, the new object, and its oid. DEPRECATED — if you care about using the entity, you should make the ID yourself, and hang on to it."
   [world template]
-  (let [[new-world oid] (get-oid world template)
+  (let [oid (or (:oid template) (ider/get-next! :oid))
         object (merge (make oid) template)]
-    [(save new-world object) object oid]))
+    [(save world object) object oid]))
 
 (defn create
   "Create a new object. Takes a world and a template object. Returns the updated world. To also get the new object, use the function create-and-use instead."

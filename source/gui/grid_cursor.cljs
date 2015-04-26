@@ -4,22 +4,22 @@
 
 (defn setup
   [world]
-  (entity/create world {:eid ::drawing-hint
+  (entity/create world {:eid ::grid-cursor
                         :geo {:type :circle :r 14}}))
 
 (defn show
   [world]
-  (entity/change world ::drawing-hint assoc-in [:dye :fill] "#2A2A2A"))
+  (entity/change world ::grid-cursor assoc-in [:dye :fill] "#2A2A2A"))
 
 (defn hide
   [world]
-  (entity/change world ::drawing-hint assoc-in [:dye :fill] "rgba(0,0,0,0)"))
+  (entity/change world ::grid-cursor assoc-in [:dye :fill] "rgba(0,0,0,0)"))
 
 (defn move
   [world event-data]
   (let [abs (:abs event-data)
         x (* (round (/ (:x abs) 30)) 30)
         y (* (round (/ (:y abs) 30)) 30)]
-    (entity/change world ::drawing-hint assoc :pos {:x x :y y})))
+    (entity/change world ::grid-cursor assoc :pos {:x x :y y})))
 
       
