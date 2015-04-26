@@ -1,36 +1,24 @@
-;; Look at the raw events, and process them into instructions for what the GUI should do.
+;; Look at the raw events, and process them into instructions for what the system should do.
 
 (ns logic.inputs)
 
-(defn keyboard-shortcuts
-  [world [event-type event-data]]
-  (if (= event-type :key-down)
-      (let [[changed pressing] event-data]
-        (case pressing
-              
-              #{:z}
-                (assoc world :action :undo)
+(defn- clear-input-action
+  "Actions only last 1 tick."
+  [world]
+  (assoc world :action nil))
 
-              #{:shift :z}
-                (assoc world :action :redo)
-              
-              world))
-      (assoc world :action nil)))
-
-(defn- update-mode
+(defn- process-keyboard-state
   [world [event-type event-data]]
-  (or (case event-type
-            
-            :key-down
-              (assoc world :mode (case (first event-data)
-                :c :drawing
-                :space :navigating
-                nil))
-                
-            :key-up
-              (assoc world :mode nil)
-            
-            nil)
+  (or
+    (case event-type
+      :key-down (case event-data
+                      #{:space}     (assoc world :mode :navigating)
+                      #{:c}         (assoc world :mode :drawing)
+                      #{:z}         (assoc world :action :undo)
+                      #{:shift :z}  (assoc world :action :redo)
+                      nil)
+      :key-up (assoc world :mode nil)
+      nil)
     world))
 
 ;; PUBLIC
@@ -38,5 +26,5 @@
 (defn act
   [world event]
   (-> world
-      (keyboard-shortcuts event)
-      (update-mode event)))
+      (clear-input-action)
+      (process-keyboard-state event)))

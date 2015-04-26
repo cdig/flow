@@ -10,7 +10,6 @@
             [app.world :as world]
             [browser.all :as browser]
             [debug.testem :as testem]
-            [entity.entity :as entity]
             [gui.all :as gui]
             [handlers.all :as handlers]
             [logic.logics :as logics]
@@ -40,7 +39,6 @@
   (browser/setup! window)
   (handlers/setup!)
   (-> (world/create)
-      entity/setup
       object/setup
       gui/setup
       testem/setup

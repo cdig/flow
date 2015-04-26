@@ -1,8 +1,7 @@
 ;; The render system is responsible for orchestrating how our objects get drawn to the screen. It takes the objects that we have, turns their data into drawing instructions, and feeds that data to a renderable surface, which does the side-effectful drawing work.
 
 (ns app.render
-  (:require [entity.entity :as entity]
-            [object.object :as object]
+  (:require [object.object :as object]
             [app.thing :as thing]
             [gui.viewport :as viewport]
             [browser.window :as window]
@@ -36,9 +35,6 @@
   (render! ::object
            (object/all world)
            (map object/object->renderable (vals (object/all world))))
-  (render! ::entity
-           (entity/all world)
-           (map entity/entity->renderable (vals (entity/all world))))
   (render! ::thing
            (thing/all world)
            (map thing/thing->renderable (vals (thing/all world))))

@@ -18,7 +18,7 @@
     (fn [event]
       (let [changed-key (keyboard/event->keyword event)]
         (when-not (get @pressing changed-key) ;; Ignore key repeat
-          [:key-down [changed-key (swap! pressing conj changed-key)]])))
+          [:key-down (swap! pressing conj changed-key)])))
     ;; Merger
     (fn [older newer]
       newer))
@@ -28,7 +28,7 @@
     ;; Handler
     (fn [event]
       (let [changed-key (keyboard/event->keyword event)]
-        [:key-up [changed-key (swap! pressing disj changed-key)]]))
+        [:key-up (swap! pressing disj changed-key)]))
     ;; Merger
     (fn [older newer]
       newer)))
