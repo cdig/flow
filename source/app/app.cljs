@@ -31,6 +31,7 @@
       events/drain!
       logics/act
       render/act!
+      ; safe-print
       world/save!))
 
 (defn- initialize!
@@ -45,7 +46,7 @@
       testem/setup
       save-state!
       world/save!)
-  (engine/start! tick!))
+  (engine/start! #(tick! %)))
 
 ;; PUBLIC
 

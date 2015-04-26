@@ -1,14 +1,12 @@
 (ns facet.pos.grid-pos)
 
-(defn- xpos [i]
-  (-> i
-      (* 30)
-      (+ 15)))
+(defn- xpos
+  [i]
+  (* i 30))
 
-(defn- ypos [i]
-  (-> i
-      (* 30)
-      (+ 15)))
+(defn- ypos
+  [i]
+  (* i 30))
 
 ;; PUBLIC
 
