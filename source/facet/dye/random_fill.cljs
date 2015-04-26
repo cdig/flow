@@ -1,6 +1,12 @@
-(ns facet.dye.random-fill)
+(ns facet.dye.random-fill
+  (:require [core.color :refer [random-color]]))
+
+;; PUBLIC
 
 (defn create
-  "Creates a random-fill facet. Takes a world, facet id, and initial value. Returns the updated world."
-  [world fid init]
-  world)
+  [_]
+  {:fill (random-color)})
+
+(defn render
+  [state]
+  state)

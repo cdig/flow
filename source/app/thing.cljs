@@ -12,7 +12,8 @@
   [world tid facets]
   (loop [world world facets facets]
     (if-let [[type init] (first facets)]
-      (recur (facet/create world tid type init) (rest facets))
+      (recur (assoc-in world [::things tid type] (facet/create type init))
+             (rest facets))
       world)))
 
 ;; PUBLIC
@@ -24,14 +25,9 @@
 
 
 (defn thing->renderable
-  "Turns an thing into renderable data, which tells the surface what to draw."
+  "Turns a thing into renderable data, which tells the surface what to draw."
   [thing]
-  ; (merge
-  ;   (:pos thing)
-  ;   (:geo thing)
-  ;   (:dye thing))
-  )
-  
+  (reduce merge (vals thing)))
   
 (defn save
   "Takes a world and a thing, and saves the thing into the world. Returns the updated world."

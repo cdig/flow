@@ -3,9 +3,9 @@
 ;; PUBLIC
 
 (defn create
-  [r]
-  {:type :circle :r r})
+  [[start end]]
+  {:start start :end end})
 
 (defn render
   [state]
-  state)
+  {:type :line :points []})

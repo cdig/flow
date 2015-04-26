@@ -3,19 +3,20 @@
             [app.thing :as thing]
             [core.color :refer [random-color]]))
 
-(defn- xpos [i]
+(defn- xpos "DEPRECATED" [i]
   (-> i
       (mod 50)
       (* 30)
       (+ 15)))
 
-(defn- ypos [i]
+(defn- ypos "DEPRECATED" [i]
   (-> i
       (quot 50)
       (* 30)
       (+ 15)))
 
 (defn create-object
+  "DEPRECATED"
   [world i]
   (object/create
     world
@@ -26,14 +27,13 @@
 
 (defn create-thing
   [world i]
-  (thing/create world {:grid-pos [(xpos i) (ypos i)]
-                       :layer :user
+  (thing/create world {:grid-pos [(mod i 50) (quot i 50)]
                        :circle 8
-                       :dye [:random-fill
-                             [:stroke-rgb 40]]}))
+                       :random-fill nil
+                       :stroke-rgb 40}))
 
 (defn setup [world]
   (loop [i (dec 10) world world]
     (if (neg? i)
         world
-        (recur (dec i) (create-object world i)))))
+        (recur (dec i) (create-thing world i)))))

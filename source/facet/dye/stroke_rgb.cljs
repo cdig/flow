@@ -1,6 +1,11 @@
 (ns facet.dye.stroke-rgb)
 
+;; PUBLIC
+
 (defn create
-  "Creates a stroke-rgb facet. Takes a world, facet id, and initial value. Returns the updated world."
-  [world fid init]
-  world)
+  [v]
+  {:stroke (str "rgb(" v "," v "," v ")")})
+
+(defn render
+  [state]
+  state)
