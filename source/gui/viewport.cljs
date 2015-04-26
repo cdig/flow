@@ -18,6 +18,13 @@
   [world rel]
   (update world :viewport merge+ rel))
 
+(defn tick
+  [world [event-type event-data]]
+  (if (and (= (:mode world) :navigating)
+           (= event-type :mouse-drag))
+      (move-pos world (:rel event-data))
+      world))
+
 (defn get-size
   []
   {:w (window/width) :h (window/height)})

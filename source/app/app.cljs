@@ -30,7 +30,6 @@
       events/drain!
       logics/act
       render/act!
-      ; safe-print
       world/save!))
 
 (defn- initialize!

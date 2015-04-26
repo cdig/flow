@@ -5,50 +5,14 @@
             [object.line :as line]
             [gui.viewport :as viewport]))
 
-;; I don't think I need prev-objects anymore, since undo/save! does a diff on prev
-(defonce prev-objects (atom nil))
-
 ;; HELPERS
 
 (defn save-state
   [world]
-  (let [objects (object/all world)]
-    (when (not= @prev-objects objects)
-      (reset! prev-objects objects)
-      (undo/save! objects))
-    world))
-
-(defn merge+
-  [old new]
-  (merge-with + old new))
-
-(defn- move-viewport
-  [world event-data]
-  (viewport/move-pos world (:rel event-data)))
-
-(defn- move-all-objects
-  [world event-data]
-  (let [objects (object/all world)]
-    (loop [world world
-           [oid ent] (first objects)
-           objects (rest objects)]
-      (if (nil? ent)
-          world
-          (recur
-            (object/save world (update ent :pos merge+ (:rel event-data)))
-            (first objects)
-            (rest objects))))))
+  (undo/save! (object/all world))
+  world)
 
 ;; ACTIONS
-
-(defn- viewport-nav
-  [world [event-type event-data]]
-  (if (and (= (:mode world) :navigating)
-           (= event-type :mouse-drag))
-      (-> world
-          (move-viewport event-data)
-          (move-all-objects event-data))
-      world))
 
 (defn- draw-lines
   [world [event-type event-data]]
@@ -73,26 +37,6 @@
       nil)
     world))
 
-(defn- set-cursor
-  [world]
-  (if (= (:mode world) :drawing)
-      (grid-cursor/show world)
-      (grid-cursor/hide world)))
-
-(defn- move-cursor
-  [world [event-type event-data]]
-  (if (and (= (:mode world) :drawing)
-           (or (= event-type :mouse-move) ;; We also want to add key-down here, but we need access to current mouse state.
-               (= event-type :mouse-drag)))
-      (grid-cursor/move world event-data)
-      world))
-
-(defn- show-cursor
-  [world event]
-  (-> world
-      set-cursor
-      (move-cursor event)))
-
 (defn handle-undo
   [world]
   (or
@@ -100,27 +44,21 @@
 
       :undo
         (when-let [new-state (undo/undo!)]
-          (->> new-state
-               (reset! prev-objects)
-               (object/populate world)))
+          (object/populate world new-state))
       
       :redo
         (when-let [new-state (undo/redo!)]
-          (->> new-state
-               (reset! prev-objects)
-               (object/populate world)))
+          (object/populate world new-state))
       
       nil)
     world))
 
 ; PUBLIC
 
-(defn- safe-print [world] (print world) world)
-
 (defn act
   [world event]
   (-> world
-      (viewport-nav event)
+      (viewport/tick event)
       (draw-lines event)
-      (show-cursor event)
+      (grid-cursor/tick event)
       handle-undo))
