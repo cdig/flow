@@ -10,14 +10,15 @@
             [app.world :as world]
             [browser.all :as browser]
             [debug.testem :as testem]
+            [entity.entity :as entity]
             [gui.all :as gui]
             [handlers.all :as handlers]
             [logic.logics :as logics]
-            [object.object :as object]))
+            ))
 
 ;; HELPERS
 
-(defn- save-state! [w] (undo/save! (object/all w)) w)
+(defn- save-state! [w] (undo/save! (entity/all w)) w)
 (defn- safe-print [w] (print w) w)
 
 ;; MAIN
@@ -38,7 +39,6 @@
   (browser/setup! window)
   (handlers/setup!)
   (-> (world/create)
-      object/setup
       gui/setup
       testem/setup
       save-state!

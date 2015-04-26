@@ -1,9 +1,8 @@
 ;; A line SHOULD be a facet with 2 properties: start and end; both of which are other entities with a "pos"
 
-
-
 (ns object.line
-  (:require [object.object :as object]
+  (:require
+            ; [object.object :as object]
             [core.math :refer [round sqrt]]))
 
 (defn- snap [[x y]]
@@ -28,36 +27,36 @@
 
 ;; PUBLIC
 
-(defn create-and-use
-  "Make a new line Object. Takes a world and many points. Returns a 3 element vector with the updated world, the new object, and its oid."
-  [world & points]
-  (object/create-and-use world
-                 {:geo {:type :line :points (snap-points points)}
-                  :dye {:stroke "#CCC"}}))
-
-(defn create
-  "Make a new line Object. Takes a world and many points. Returns the updated world."
-  [world & points]
-  (object/create world
-                 {:geo {:type :line :points (snap-points points)}
-                  :dye {:stroke "#CCC"}}))
-
-(defn edit
-  "Edit and save an existing line. Takes a world, an oid, and many points. Returns the updated world."
-  [world oid & points]
-  (let [object (object/fetch world oid)]
-    (object/save world (assoc-in object [:geo :points] (snap-points points)))))
-
-(defn move-tail
-  "Move the tail of an existing line. Takes a world, an oid, and many points. Returns the updated world."
-  [world oid new-tail]
-  (let [object (object/fetch world oid)]
-    (object/save world (update-in object [:geo :points] #(conj (pop %) (snap new-tail))))))
-
-(defn length
-  "Takes a world and a line's oid, and returns the length of the line."
-  ;; We could probably better write this with loop/recur rather than reduce
-  [world oid]
-  (first (reduce length-reduce
-                 [0 nil]
-                 (get-in (object/fetch world oid) [:geo :points]))))
+; (defn create-and-use
+;   "Make a new line Object. Takes a world and many points. Returns a 3 element vector with the updated world, the new object, and its oid."
+;   [world & points]
+;   (object/create-and-use world
+;                  {:geo {:type :line :points (snap-points points)}
+;                   :dye {:stroke "#CCC"}}))
+;
+; (defn create
+;   "Make a new line Object. Takes a world and many points. Returns the updated world."
+;   [world & points]
+;   (object/create world
+;                  {:geo {:type :line :points (snap-points points)}
+;                   :dye {:stroke "#CCC"}}))
+;
+; (defn edit
+;   "Edit and save an existing line. Takes a world, an oid, and many points. Returns the updated world."
+;   [world oid & points]
+;   (let [object (object/fetch world oid)]
+;     (object/save world (assoc-in object [:geo :points] (snap-points points)))))
+;
+; (defn move-tail
+;   "Move the tail of an existing line. Takes a world, an oid, and many points. Returns the updated world."
+;   [world oid new-tail]
+;   (let [object (object/fetch world oid)]
+;     (object/save world (update-in object [:geo :points] #(conj (pop %) (snap new-tail))))))
+;
+; (defn length
+;   "Takes a world and a line's oid, and returns the length of the line."
+;   ;; We could probably better write this with loop/recur rather than reduce
+;   [world oid]
+;   (first (reduce length-reduce
+;                  [0 nil]
+;                  (get-in (object/fetch world oid) [:geo :points]))))
