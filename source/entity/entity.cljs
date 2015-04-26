@@ -22,7 +22,7 @@
 (defn entity->renderable
   "Turns a entity into renderable data, which tells the surface what to draw."
   [entity]
-  (reduce merge (vals entity)))
+  (reduce merge (vals (dissoc entity :eid))))
   
 (defn save
   "Takes a world and a entity, and saves the entity into the world. Returns the updated world."
@@ -41,7 +41,7 @@
 (defn create
   "Takes a world and a map of facet names to initial values. Creates a new entity, saves it into the world, and attaches all the facets. Returns the updated world. If you would like to have a reference to the new entity, please include an :eid in the map of facets."
   [world facets]
-  (let [eid (or (:eid facets) (ider/get-next! :eid))
-        facets (dissoc facets :eid)]
-    (save world (make eid))
-    (attach-facets world eid (dissoc facets :eid))))
+  (let [eid (or (:eid facets) (ider/get-next! :eid))]
+    (-> world
+        (save (make eid))
+        (attach-facets eid (dissoc facets :eid)))))

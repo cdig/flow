@@ -2,7 +2,7 @@
   (:require [app.undo :as undo]
             ; [object.object :as object]
             [gui.grid-cursor :as grid-cursor]
-            [object.line :as line]
+            ; [object.line :as line]
             [gui.viewport :as viewport]))
 
 ;; HELPERS

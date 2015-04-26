@@ -38,6 +38,9 @@
            :w size}))))
 
 (defn create
-  "Creates a grid facet. Takes a world, facet id, and initial value. Returns the updated world."
-  [world fid init]
-  world)
+  [init]
+  init)
+
+(defn render
+  [state]
+  state)

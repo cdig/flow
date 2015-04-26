@@ -19,7 +19,7 @@
 ;; HELPERS
 
 (defn- save-state! [w] (undo/save! (entity/all w)) w)
-(defn- safe-print [w] (print w) w)
+(defn- safe-print [v] (print v) v)
 
 ;; MAIN
 
@@ -31,7 +31,8 @@
       events/drain!
       logics/act
       render/act!
-      world/save!))
+      world/save!
+      ))
 
 (defn- initialize!
   "In the correct order, set up all the subsystems in our app. Takes the js window object. Return value should be ignored."
@@ -42,7 +43,8 @@
       gui/setup
       testem/setup
       save-state!
-      world/save!)
+      world/save!
+      )
   (engine/start! #(tick! %)))
 
 ;; PUBLIC
