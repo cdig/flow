@@ -5,5 +5,5 @@
   init)
 
 (defn render
-  [state]
+  [world state]
   state)

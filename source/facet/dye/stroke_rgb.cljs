@@ -7,5 +7,5 @@
   {:stroke (str "rgb(" v "," v "," v ")")})
 
 (defn render
-  [state]
+  [world state]
   state)

@@ -48,9 +48,9 @@
 
 (defn- render-line!
   [context {:keys [x y points]}]
-  (let [[[sx sy]] points]
+  (let [{sx :x sy :y} (first points)]
     (canvas/moveTo! context (+ x sx) (+ y sy)))
-  (doseq [[px py] (rest points)]
+  (doseq [{px :x py :y} (rest points)]
     (canvas/lineTo! context (+ x px) (+ y py))))
 
 ;; PUBLIC
@@ -67,15 +67,15 @@
     (canvas/lineJoin! context "round")
     (canvas/lineWidth! context "3")
     
-    (doseq [{:keys [type stroke fill] :as object} elements]
+    (doseq [{:keys [type stroke fill] :as entity} elements]
       (canvas/beginPath! context)
       
       (case type
-        :square (render-square! context object)
-        :rect (render-rect! context object)
-        :circle (render-circle! context object)
-        :line (render-line! context object)
-        (prn "Surface: Unknown Type" type "for" object "on surface" key))
+        :square (render-square! context entity)
+        :rect (render-rect! context entity)
+        :circle (render-circle! context entity)
+        :line (render-line! context entity)
+        (prn "Surface: Unknown Type" type "for" entity "on surface" key))
       
       (canvas/closePath! context)
 

@@ -7,5 +7,5 @@
   {:type :circle :r r})
 
 (defn render
-  [state]
+  [world state]
   state)

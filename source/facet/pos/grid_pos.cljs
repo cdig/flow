@@ -1,20 +1,19 @@
 (ns facet.pos.grid-pos)
 
-(defn- xpos
-  [i]
-  (* i 30))
-
-(defn- ypos
-  [i]
-  (* i 30))
+;; Hack
+(defn- scale [i] (* i 30))
 
 ;; PUBLIC
 
 (defn create
-  [[x y]]
-  {:x (xpos x) :y (ypos y)})
+  "Takes a position in grid units (unscaled) in the form {:x x :y y}. If nil, assumes 0 0."
+  [pos]
+  (if pos
+      (zipmap
+        (keys pos)
+        (map scale (vals pos))) ;; Pre-scaling is a bit of a premature optimization. We should probably do it at render time, I think.
+      {:x 0 :y 0}))
 
 (defn render
-  "Transforms posiiton data for rendering. No transformation needed, so far. In the future, we will need to handle stacked space transforms.. somewhere."
-  [state]
+  [world state]
   state)

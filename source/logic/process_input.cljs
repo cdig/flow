@@ -1,13 +1,7 @@
-;; Look at the raw events, and process them into instructions for what the system should do.
-
-(ns logic.inputs)
-
-(defn- clear-input-action
-  "Actions only last 1 tick."
-  [world]
-  (assoc world :action nil))
+(ns logic.process-input)
 
 (defn- process-keyboard-state
+  "If the given event is a keyboard event, set some input state accordingly."
   [world [event-type event-data]]
   (or
     (case event-type
@@ -23,8 +17,7 @@
 
 ;; PUBLIC
 
-(defn act
+(defn tick
   [world event]
   (-> world
-      (clear-input-action)
       (process-keyboard-state event)))

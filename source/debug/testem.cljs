@@ -1,16 +1,27 @@
 (ns debug.testem
-  (:require [entity.entity :as entity]
+  (:require [app.ider :as ider]
+            [entity.entity :as entity]
             [core.color :refer [random-color]]))
 
-(defn create-entity
-  [world i]
-  (entity/create world {:grid-pos [(mod i 50) (quot i 50)]
-                       :circle 8
-                       :random-fill nil
-                       :stroke-rgb 40}))
+;; Test circles
 
-(defn setup [world]
+(defn- create-entity
+  [world i]
+  (entity/create world {:grid-pos {:x (mod i 50) :y (quot i 50)}
+                        :circle 8
+                        :random-fill nil
+                        :stroke-rgb 40}))
+
+(defn- test-circles
+  [world]
   (loop [i (dec 10) world world]
     (if (neg? i)
         world
         (recur (dec i) (create-entity world i)))))
+
+;; PUBLIC
+
+(defn setup
+  [world]
+  (-> world
+      test-circles))

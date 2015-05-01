@@ -8,5 +8,5 @@
   {:fill (random-color)})
 
 (defn render
-  [state]
+  [world state]
   state)

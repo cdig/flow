@@ -1,24 +1,26 @@
-(ns facet.geo.circle
-  (:require [core.math :refer [round sqrt]]))
+(ns facet.geo.line
+  (:require [core.math :refer [round sqrt]]
+            [entity.entity :as entity]))
+
+(defn- extract-points
+  [world state]
+  (vec (map #(-> %
+                 ((partial entity/fetch world))
+                 :grid-pos) ;; HACK — We want a way to get the real position regardless of type
+            state)))
 
 ;; PUBLIC
 
 (defn create
-  [[start end]]
-  {:start start :end end})
+  "State is (currently) a vec of point eids like: [:eid-1 :eid-2]"
+  [state]
+  state)
 
 (defn render
-  [state]
-  {:type :line :points []})
+  [world state]
+  {:type :line :points (extract-points world state)})
 
 ;; OLD
-
-(defn- snap [[x y]]
-  [(* (round (/ x 30)) 30)
-   (* (round (/ y 30)) 30)])
-
-(defn- snap-points [points]
-  (vec (map snap points)))
 
 (defn- distance-between
   "Pythagorean yeah!"
@@ -64,7 +66,7 @@
 ; (defn length
 ;   "Takes a world and a line's oid, and returns the length of the line."
 ;   ;; We could probably better write this with loop/recur rather than reduce
-;   [world oid]
+;   [world eid]
 ;   (first (reduce length-reduce
 ;                  [0 nil]
-;                  (get-in (object/fetch world oid) [:geo :points]))))
+;                  (get-in (entity/fetch world eid) [:geo :points]))))
