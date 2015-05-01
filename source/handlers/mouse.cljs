@@ -46,10 +46,7 @@
     (fn [event]
       (let [type (if @a-down? :mouse-drag :mouse-move)
             data (update-mouse-position! event false)]
-        [type data]))
-    ;; Merger
-    (fn [older newer]
-      (assoc newer :rel (merge-with + (:rel older) (:rel newer)))))
+        (when data [type data])))) ;; Return nil if there's no data
 
   (events/register-event-handler!
     "mousedown"
@@ -58,10 +55,7 @@
       (when-not @a-down? ;; Ignore unexpected mousedowns — this was written defensively, not as a bugfix
         (let [data (update-mouse-position! event true)]
           (reset! a-down? true)
-          [:mouse-down data])))
-    ;; Merger
-    (fn [older newer]
-      newer))
+          [:mouse-down data]))))
       
   (events/register-event-handler!
     "mouseup"
@@ -70,7 +64,4 @@
       (when @a-down? ;; Ignore unexpected mouseups — this was written defensively, not as a bugfix
         (let [data (update-mouse-position! event true)]
         (reset! a-down? false)
-        [:mouse-up data])))
-    ;; Merger
-    (fn [older newer]
-      newer)))
+        [:mouse-up data])))))

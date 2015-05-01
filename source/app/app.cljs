@@ -18,34 +18,37 @@
 
 ;; HELPERS
 
-(defn- save-state! [w] (undo/save! (entity/all w)) w)
+(defn- save-state! [w]  w)
 (defn- safe-print [v] (print v) v)
 
 ;; MAIN
 
-(defn- tick!
-  "Update the world by threading it through all subsystems, in the correct order. Takes the delta time since the last tick. Return value should be ignored."
+(defn- update-world!
+  [event]
+  (-> (world/fetch)
+      (logics/act event)
+      world/save!
+      ))
+
+(defn- render-world!
+  "Render the current state of the world to the screen"
   [dT]
   (-> (world/fetch)
-      (assoc :dT dT)
-      events/drain!
-      logics/act
       render/act!
-      world/save!
       ))
 
 (defn- initialize!
   "In the correct order, set up all the subsystems in our app. Takes the js window object. Return value should be ignored."
   [window]
   (browser/setup! window)
+  (events/setup! #(update-world! %)) ;; Anon function is used to make dev easier
   (handlers/setup!)
   (-> (world/create)
       gui/setup
       testem/setup
-      save-state!
-      world/save!
-      )
-  (engine/start! #(tick! %)))
+      world/save!)
+  (undo/save! (entity/all (world/fetch)))
+  (engine/start! #(render-world! %))) ;; Anon function is used to make dev easier
 
 ;; PUBLIC
 
