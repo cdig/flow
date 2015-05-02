@@ -4,7 +4,6 @@
 
 (ns ^:figwheel-always app.app
   (:require [app.engine :as engine]
-            [app.events :as events]
             [app.render :as render]
             [app.undo :as undo]
             [app.world :as world]
@@ -12,9 +11,13 @@
             [debug.testem :as testem]
             [entity.entity :as entity]
             [gui.all :as gui]
-            [handlers.all :as handlers]
+            [io.events :as events]
             [logic.logics :as logics]
             ))
+
+;; DEBUG
+
+; (prn (world/fetch))
 
 ;; HELPERS
 
@@ -24,9 +27,9 @@
 ;; MAIN
 
 (defn- update-world!
-  [event]
-  (-> (world/fetch)
-      (logics/act event)
+  [new-world]
+  (-> new-world
+      logics/act
       world/save!
       ))
 
@@ -41,14 +44,13 @@
   "In the correct order, set up all the subsystems in our app. Takes the js window object. Return value should be ignored."
   [window]
   (browser/setup! window)
-  (events/setup! #(update-world! %)) ;; Anon function is used to make dev easier
-  (handlers/setup!)
   (-> (world/create)
+      (events/setup! world/fetch #(update-world! %)) ;; Anon function makes this more reloadable for figwheel
       gui/setup
       testem/setup
       world/save!)
   (undo/save! (entity/all (world/fetch)))
-  (engine/start! #(render-world! %))) ;; Anon function is used to make dev easier
+  (engine/start! #(render-world! %))) ;; Anon function makes this more reloadable for figwheel
 
 ;; PUBLIC
 

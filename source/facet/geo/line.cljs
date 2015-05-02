@@ -1,13 +1,18 @@
 (ns facet.geo.line
   (:require [core.math :refer [round sqrt]]
-            [entity.entity :as entity]))
+            ; [entity.entity :as entity]
+            ))
 
 (defn- extract-points
   [world state]
-  (vec (map #(-> %
-                 ((partial entity/fetch world))
-                 :grid-pos) ;; HACK — We want a way to get the real position regardless of type
-            state)))
+  
+  ;; HACK until we resolve circular dependencies
+  nil)
+  
+  ; (vec (map #(-> %
+  ;                ((partial entity/fetch world))
+  ;                :grid-pos) ;; HACK — We want a way to get the real position regardless of type
+  ;           state)))
 
 ;; PUBLIC
 

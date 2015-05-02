@@ -14,7 +14,7 @@
 
 (defn- test-circles
   [world]
-  (loop [i (dec 10) world world]
+  (loop [i (dec 1) world world]
     (if (neg? i)
         world
         (recur (dec i) (create-entity world i)))))

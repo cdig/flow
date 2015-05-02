@@ -17,7 +17,7 @@
 
 ;; PUBLIC
 
-;; entity -> X
+;; entity -> entity
 
 (defn attach-facet
   "Attaches a facet instance to an entity. Returns an updated entity."

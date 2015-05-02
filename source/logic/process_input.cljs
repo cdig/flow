@@ -1,5 +1,7 @@
 (ns logic.process-input)
 
+(defn- safe-print [v] (print v) v)
+
 (defn- process-keyboard-state
   "If the given event is a keyboard event, set some input state accordingly."
   [world [event-type event-data]]
