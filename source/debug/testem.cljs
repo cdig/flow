@@ -1,23 +1,23 @@
 (ns debug.testem
-  (:require [app.ider :as ider]
-            [entity.entity :as entity]
+  (:require [entity.entity :as entity]
+            [facet.facet :as facet]
             [core.color :refer [random-color]]))
 
-;; Test circles
-
-(defn- create-entity
+(defn- create-circle
   [world i]
-  (entity/create world {:grid-pos {:x (mod i 50) :y (quot i 50)}
-                        :circle 8
-                        :random-fill nil
-                        :stroke-rgb 40}))
+  (let [eid (entity/create!)]
+    (-> world
+        (facet/attach eid :grid-pos {:x (mod i 50) :y (quot i 50)})
+        (facet/attach eid :circle 8)
+        (facet/attach eid :random-fill nil)
+        (facet/attach eid :stroke-rgb 40))))
 
 (defn- test-circles
   [world]
   (loop [i (dec 1) world world]
     (if (neg? i)
         world
-        (recur (dec i) (create-entity world i)))))
+        (recur (dec i) (create-circle world i)))))
 
 ;; PUBLIC
 

@@ -6,13 +6,11 @@
 (defn- extract-points
   [world state]
   
-  ;; HACK until we resolve circular dependencies
-  nil)
+  ;; HACK — We want a way to access entities we depend on, without reaching into the world ourselves, without circular dependencies
+  ;; HACK — We want a way to get the real position regardless of type, and not use :grid-pos
   
-  ; (vec (map #(-> %
-  ;                ((partial entity/fetch world))
-  ;                :grid-pos) ;; HACK — We want a way to get the real position regardless of type
-  ;           state)))
+  (vec (map #(get-in world [:entities % :grid-pos])
+            state)))
 
 ;; PUBLIC
 

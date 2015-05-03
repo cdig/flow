@@ -5,8 +5,8 @@
 ;; The kinds govern the general concerns of behaviour in the system — simulation logic and rendering.
 ;; The types are specializations of these behaviours.
 
-(ns facet.all
-  (:require [app.ider :as ider]
+(ns facet.facet
+  (:require [entity.entity :as entity]
             [facet.data.data :as data]
             [facet.data.eid :as eid]
             [facet.data.layer :as layer]
@@ -21,9 +21,30 @@
             [facet.pos.pos :as pos]
             ))
 
+(declare create)
+(declare render)
+
+;; HELPERS
+
+(defn- entity->renderable
+  "Turns a entity into renderable data, which tells the surface what to draw."
+  [world entity]
+  (reduce merge (map (partial render world) entity)))
+
 ;; PUBLIC
 
-(defn create
+(defn attach
+  [world eid type state]
+  (entity/store world eid (assoc (entity/fetch world eid) type (create type state))))
+
+(defn renderables
+  [world]
+  (map (partial entity->renderable world) (vals (entity/all world))))
+
+
+;; STUPID
+
+(defn- create
   "Creates a new facet instance. Takes a facet type and initial facet value. Dispatches to the correct facet create function, since we don't have dynamic dispatch. Returns the new facet state."
   [type state]
   (case type
@@ -51,8 +72,7 @@
     ;; No default value — if we use an unknown value, that's an error!
     ))
 
-(defn render
-  "Takes the type and state of a facet. Calls the render function. Returns any data needed for rendering, or nil."
+(defn- render
   [world [type state]]
   (case type
     

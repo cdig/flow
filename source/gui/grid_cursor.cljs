@@ -1,5 +1,5 @@
 (ns gui.grid-cursor
-  (:require [entity.entity :as entity]
+  (:require [facet.facet :as facet]
             [core.math :refer [round]]))
 
 ;; Visibility
@@ -14,7 +14,7 @@
   [world [event-type event-data]]
   (if (or (= event-type :key-down)
           (= event-type :key-up))
-      (entity/update-eid world ::grid-cursor {:dye {:stroke (mode->stroke (:mode world))}})
+      (facet/attach world ::grid-cursor :dye {:stroke (mode->stroke (:mode world))})
       world))
 
 ;; Positioning
@@ -34,17 +34,17 @@
   (if (and (= (:mode world) :drawing)
            (or (= event-type :mouse-move) ;; We also want to add key-down here, but we need access to current mouse state.
                (= event-type :mouse-drag)))
-      (entity/update-eid world ::grid-cursor {:grid-pos (pos->grid-pos (:abs event-data))})
+      (facet/attach world ::grid-cursor :grid-pos (pos->grid-pos (:abs event-data)))
       world))
 
 ;; PUBLIC
 
 (defn setup
   [world]
-  (entity/create world {:eid ::grid-cursor
-                        :grid-pos nil
-                        :circle 30
-                        :dye {:stroke "hsla(212,24%,32%,0)"}}))
+  (-> world
+      (facet/attach ::grid-cursor :grid-pos nil)
+      (facet/attach ::grid-cursor :circle 30)
+      (facet/attach ::grid-cursor :dye {:stroke "hsla(212,24%,32%,0)"})))
 
 (defn tick
   [world event]

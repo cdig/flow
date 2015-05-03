@@ -2,6 +2,7 @@
 
 (ns app.render
   (:require [entity.entity :as entity]
+            [facet.facet :as facet]
             [gui.viewport :as viewport]
             [browser.window :as window]
             [io.surface :as surface]))
@@ -32,7 +33,8 @@
   (render! ::viewport
            (viewport/get-pos world)
            (viewport/renderable world))
+           
   (render! ::entity
            (entity/all world)
-           (map (partial entity/entity->renderable world) (vals (entity/all world))))
+           (facet/renderables world))
   world)

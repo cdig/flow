@@ -16,6 +16,22 @@
       .stopPropagation
       handler)))
 
+(defn improve-mouse-data
+  [world old-world abs]
+  (let [rel (merge-with - abs (get-in old-world [:input :mouse :pos]))]
+    {:abs abs
+     :rel rel}))
+
+(defn- improve-data
+  "Returns improved event data."
+  [world old-world event-name event-data]
+  (case event-name
+    :mouse-move (improve-mouse-data world old-world event-data)
+    :mouse-drag (improve-mouse-data world old-world event-data)
+    :mouse-down (improve-mouse-data world old-world event-data)
+    :mouse-up   (improve-mouse-data world old-world event-data)
+    event-data))
+
 (defn- improve-name
   "Returns an improved name."
   [world event-name]
@@ -26,8 +42,9 @@
 
 (defn update-world-event
   "Returns a world."
-  [world event-name event-data]
-  (let [event-name (improve-name world event-name)]
+  [world old-world event-name event-data]
+  (let [event-name (improve-name world event-name)
+        event-data (improve-data world old-world event-name event-data)]
     (assoc world :event [event-name event-data])))
 
 (defn- update-world-input
@@ -41,19 +58,14 @@
     :key-up     (update-in world [:input :keyboard] disj event-data)
     :resize     (assoc-in world [:input :window] event-data)))
 
-(defn- update-world
-  "Returns a world."
-  [world event-name event-data]
-  (-> world
-      (update-world-input event-name event-data)
-      (update-world-event event-name event-data)))
-
 (defn- handle-event!
   "Returns nil."
   [old-world give-world event-name event-data]
-  (let [new-world (update-world old-world event-name event-data)]
-    (when (not= old-world new-world) ;; Only call give-world if the world changed
-      (give-world new-world))))
+  (let [new-world (update-world-input old-world event-name event-data)]
+    (when (not= old-world new-world) ;; Only continue if the event provided new input data to the system
+      (-> new-world
+          (update-world-event old-world event-name event-data)
+          give-world))))
 
 (defn- setup-listeners!
   "Returns nil."
