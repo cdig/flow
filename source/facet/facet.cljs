@@ -21,30 +21,30 @@
             [facet.pos.pos :as pos]
             ))
 
-(declare create)
-(declare render)
+(declare dispatch-create)
+(declare dispatch-render)
 
 ;; HELPERS
 
 (defn- entity->renderable
   "Turns a entity into renderable data, which tells the surface what to draw."
   [world entity]
-  (reduce merge (map (partial render world) entity)))
+  (reduce merge (map (partial dispatch-render world) entity)))
 
 ;; PUBLIC
 
 (defn attach
-  [world eid type state]
-  (entity/store world eid (assoc (entity/fetch world eid) type (create type state))))
+  [world entity-type eid facet-type state]
+  (entity/store world entity-type eid (assoc (entity/fetch world entity-type eid) facet-type (dispatch-create facet-type state))))
 
-(defn renderables
-  [world]
-  (map (partial entity->renderable world) (vals (entity/all world))))
+(defn render
+  [world entities]
+  (map (partial entity->renderable world) (vals entities)))
 
 
 ;; STUPID
 
-(defn- create
+(defn- dispatch-create
   "Creates a new facet instance. Takes a facet type and initial facet value. Dispatches to the correct facet create function, since we don't have dynamic dispatch. Returns the new facet state."
   [type state]
   (case type
@@ -72,7 +72,7 @@
     ;; No default value — if we use an unknown value, that's an error!
     ))
 
-(defn- render
+(defn- dispatch-render
   [world [type state]]
   (case type
     

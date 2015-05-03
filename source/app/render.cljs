@@ -4,6 +4,7 @@
   (:require [entity.entity :as entity]
             [facet.facet :as facet]
             [gui.viewport :as viewport]
+            [gui.grid :as grid]
             [browser.window :as window]
             [io.surface :as surface]))
 
@@ -31,10 +32,14 @@
   [world]
   (check-resize! world)
   (render! ::viewport
-           (viewport/get-pos world)
+           [(viewport/get-pos world) (grid/get-pitch world)]
            (viewport/renderable world))
            
-  (render! ::entity
-           (entity/all world)
-           (facet/renderables world))
+  (render! ::user-entities
+           [(entity/all world :user) (viewport/get-pos world) (grid/get-pitch world)]
+           (facet/render world (entity/all world :user)))
+
+  (render! ::gui-entities
+           [(entity/all world :gui) (viewport/get-pos world) (grid/get-pitch world)]
+           (facet/render world (entity/all world :gui)))
   world)

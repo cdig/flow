@@ -7,10 +7,10 @@
   [world i]
   (let [eid (entity/create!)]
     (-> world
-        (facet/attach eid :grid-pos {:x (mod i 50) :y (quot i 50)})
-        (facet/attach eid :circle 8)
-        (facet/attach eid :random-fill nil)
-        (facet/attach eid :stroke-rgb 40))))
+        (facet/attach :user eid :grid-pos {:x (mod i 50) :y (quot i 50)})
+        (facet/attach :user eid :circle 8)
+        (facet/attach :user eid :random-fill nil)
+        (facet/attach :user eid :stroke-rgb 40))))
 
 (defn- test-circles
   [world]

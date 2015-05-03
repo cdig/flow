@@ -8,6 +8,7 @@
       :key-down (case (get-in world [:input :keyboard])
                       #{:space}     (assoc world :mode :navigating)
                       #{:c}         (assoc world :mode :drawing)
+                      #{:s}         (assoc world :mode :scaling)
                       #{:z}         (assoc world :action :undo)
                       #{:shift :z}  (assoc world :action :redo)
                       nil)

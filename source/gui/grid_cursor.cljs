@@ -1,5 +1,6 @@
 (ns gui.grid-cursor
   (:require [facet.facet :as facet]
+            [gui.grid :as grid]
             [core.math :refer [round]]))
 
 ;; Visibility
@@ -14,16 +15,16 @@
   [world [event-type event-data]]
   (if (or (= event-type :key-down)
           (= event-type :key-up))
-      (facet/attach world ::grid-cursor :dye {:stroke (mode->stroke (:mode world))})
+      (facet/attach world :gui ::grid-cursor :dye {:stroke (mode->stroke (:mode world))})
       world))
 
 ;; Positioning
 
 (defn- pos->grid-pos
-  [pos]
+  [pos pitch]
   (zipmap
     (keys pos)
-    (map #(round (/ % 30)) (vals pos))))
+    (map #(round (/ % pitch)) (vals pos))))
 
 (defn- check-move
   [world [event-type event-data]]
@@ -34,7 +35,7 @@
   (if (and (= (:mode world) :drawing)
            (or (= event-type :mouse-move) ;; We also want to add key-down here, but we need access to current mouse state.
                (= event-type :mouse-drag)))
-      (facet/attach world ::grid-cursor :grid-pos (pos->grid-pos (:abs event-data)))
+      (facet/attach world :gui ::grid-cursor :grid-pos (pos->grid-pos (:abs event-data) (grid/get-pitch world)))
       world))
 
 ;; PUBLIC
@@ -42,9 +43,9 @@
 (defn setup
   [world]
   (-> world
-      (facet/attach ::grid-cursor :grid-pos nil)
-      (facet/attach ::grid-cursor :circle 30)
-      (facet/attach ::grid-cursor :dye {:stroke "hsla(212,24%,32%,0)"})))
+      (facet/attach :gui ::grid-cursor :grid-pos nil)
+      (facet/attach :gui ::grid-cursor :circle 30) ;; This would be a great place to attach a behaviour — signal of the grid pitch!
+      (facet/attach :gui ::grid-cursor :dye {:stroke "hsla(212,24%,32%,0)"})))
 
 (defn tick
   [world event]

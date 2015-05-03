@@ -1,7 +1,12 @@
 (ns facet.geo.line
   (:require [core.math :refer [round sqrt]]
-            ; [entity.entity :as entity]
+            [entity.entity :as entity]
+            [facet.pos.grid-pos :as grid-pos]
             ))
+
+(defn process-point
+  [world p]
+  (grid-pos/render world (:grid-pos (entity/fetch world :user p))))
 
 (defn- extract-points
   [world state]
@@ -9,8 +14,7 @@
   ;; HACK — We want a way to access entities we depend on, without reaching into the world ourselves, without circular dependencies
   ;; HACK — We want a way to get the real position regardless of type, and not use :grid-pos
   
-  (vec (map #(get-in world [:entities % :grid-pos])
-            state)))
+  (vec (map (partial process-point world) state)))
 
 ;; PUBLIC
 

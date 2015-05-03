@@ -49,7 +49,7 @@
       gui/setup
       testem/setup
       world/save!)
-  (undo/save! (entity/all (world/fetch)))
+  (undo/save! (entity/all :user (world/fetch)))
   (engine/start! #(render-world! %))) ;; Anon function makes this more reloadable for figwheel
 
 ;; PUBLIC

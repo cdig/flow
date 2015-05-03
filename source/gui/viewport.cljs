@@ -31,4 +31,4 @@
 
 (defn renderable
   [world]
-  (grid/generate (merge (get-pos world) (get-size))))
+  (grid/render world (merge (get-pos world) (get-size))))

@@ -6,6 +6,7 @@
             [logic.draw-lines :as draw-lines]
             [logic.handle-undo :as handle-undo]
             [logic.process-input :as process-input]
+            [logic.scale-grid :as scale-grid]
             [logic.window-size :as window-size]))
 
 ;; PUBLIC
@@ -20,9 +21,10 @@
         (process-input/tick event)
         
         ;; Order doesn't matter
-        (handle-undo/tick event)
         (draw-lines/tick event)
         (grid-cursor/tick event)
+        (handle-undo/tick event)
+        (scale-grid/tick event)
         (viewport/tick event)
         (window-size/tick event)
         

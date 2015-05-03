@@ -1,9 +1,10 @@
-(ns facet.pos.pos)
+(ns facet.pos.pos
+  (:require [gui.viewport :as viewport]))
 
 (defn create
-  [init]
-  init)
+  [state]
+  state)
 
 (defn render
   [world state]
-  state)
+  (merge-with + state (viewport/get-pos world)))

@@ -2,35 +2,36 @@
   (:require [app.undo :as undo]
             [entity.entity :as entity]
             [facet.facet :as facet]
+            [gui.grid :as grid]
             [core.math :refer [round]]))
 
 (defn save-state!
   "Returns a world."
   [world]
-  (undo/save! (entity/all world))
+  (undo/save! (entity/all world :user))
   world)
 
 (defn- pos->grid-pos
   "Returns a grid pos."
-  [pos]
+  [pos pitch]
   (zipmap
     (keys pos)
-    (map #(round (/ % 30)) (vals pos))))
+    (map #(round (/ % pitch)) (vals pos))))
 
 (defn- create-line
   "Returns a world."
   [world eid points]
   (-> world
-      (facet/attach eid :line points)
-      (facet/attach eid :stroke-rgb 200)))
+      (facet/attach :user eid :line points)
+      (facet/attach :user eid :stroke-rgb 200)))
 
 (defn- create-point
   "Returns a world."
   [world eid pos]
   (-> world
-      (facet/attach eid :grid-pos (pos->grid-pos pos))
-      (facet/attach eid :circle 6)
-      (facet/attach eid :stroke-rgb 160)))
+      (facet/attach :user eid :grid-pos (pos->grid-pos pos (grid/get-pitch world)))
+      (facet/attach :user eid :circle 6)
+      (facet/attach :user eid :stroke-rgb 160)))
 
 (defn- start-line
   "Make two points and connect them."
@@ -38,7 +39,6 @@
   (let [head-eid (entity/create!)
         tail-eid (entity/create!)
         line-eid (entity/create!)]
-    (print pos)
     (-> world
         (assoc ::drawing tail-eid) ;; This is transient state, not really part of the "world"
         (create-point head-eid pos)
@@ -47,7 +47,7 @@
   
 (defn- move-line
   [world pos]
-  (facet/attach world (::drawing world) :grid-pos (pos->grid-pos pos)))
+  (facet/attach world :user (::drawing world) :grid-pos (pos->grid-pos pos (grid/get-pitch world))))
   
 (defn- end-line
   [world]

@@ -17,6 +17,7 @@
 (defn sin [i] (Math.sin i))
 (defn cos [i] (Math.cos i))
 
+(defn pow [b p] (Math.pow b p))
 (defn sqrt [i] (Math.sqrt i))
 (defn round [i] (Math.round i))
 

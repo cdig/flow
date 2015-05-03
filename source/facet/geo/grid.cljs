@@ -2,7 +2,8 @@
 ;; State X
 ;; Deps X
 
-(ns facet.geo.grid)
+(ns facet.geo.grid
+  (:require [gui.grid :as grid]))
 
 (defn dot-position [thickness pitch step-index offset major-every]
   (-> step-index
@@ -21,9 +22,14 @@
       major-size
       minor-size))
 
-(defn generate [{:keys [x y z w h]}]
-  (let [pitch 30
-        major-every 5
+(defn create
+  [init]
+  init)
+
+(defn render
+  [world {:keys [x y w h]}]
+  (let [pitch (grid/get-pitch world)
+        major-every (grid/get-major world)
         major-size 2
         minor-size 1
         overhang (* 2 major-every)
@@ -36,11 +42,3 @@
            :x (dot-position size pitch xstep x major-every)
            :y (dot-position size pitch ystep y major-every)
            :w size}))))
-
-(defn create
-  [init]
-  init)
-
-(defn render
-  [world state]
-  state)

@@ -31,6 +31,7 @@
 (defn cosn [i] (normalize (cos i) -1 1))
 (defn sinn [i] (normalize (sin i) -1 1))
 
+(defn pow [b e] (math/pow b e))
 (defn sqrt [i] (math/sqrt i))
 (defn round [i] (math/round i))
 (defn random [] (math/random))

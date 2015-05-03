@@ -11,11 +11,11 @@
 
       :undo
         (when-let [new-state (undo/undo!)]
-          (entity/populate world new-state))
+          (entity/populate world :user new-state))
 
       :redo
         (when-let [new-state (undo/redo!)]
-          (entity/populate world new-state))
+          (entity/populate world :user new-state))
 
       nil)
     world))
