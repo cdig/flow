@@ -8,20 +8,20 @@ This is a prototype Live Schematic editor. It's very rough and should be ignored
 
 The system is a testbed for a bunch of ideas.
 
-#### Component/Entity/System — A la LightTable's BOT, Unity, etc
-*The world is comprised of entities, which have components, which are manipulated by systems.*
+#### Component/Entity/System — A la Unity, similar to LightTable's BOT, popular in games, etc
+*The world is comprised of entities, which have many components, which are manipulated by systems.*
 
-We keep the entities pretty much as-is — they're simply a unique ID for a block of memory. We call our components "facets" to avoid confusing them with hydraulic components. Facets are both code and data — they perform some of the role of systems. But we also have some conventional systems for things like orchestration and IO. If you squint, our implementation is like the bastard child of CES and MVC and OOP. That sounds pretty horrible, so maybe don't think about it that way.
+We keep the entities pretty much as-is — they're simply a unique name that ties component instances together. We call our components "facets" to avoid confusing them with hydraulic components. Facets are both code and data — they perform part of the role of the systems. But we also have some conventional systems for things like orchestration and IO. If you squint, our implementation is like the bastard child of CES and MVC and OOP. That sounds pretty horrible, so maybe don't think about it that way.
 
 #### Out of the Tar Pit's FRP (Functional Relational Programming)
-*Logic and Data are strictly separated, and utterly pure. The data is modelled relationally (as mathematical sets). The logic is a hybrid of logic programming and pure functions.*
+*Logic and Data are strictly separated, and utterly pure. The data is modeled relationally (as mathematical sets). The logic is a hybrid of logic programming and pure functions.*
 
 I'm using a few of these ideas for the implementation of the CES design, but I'd really like to draw on this thinking when exposing a programming interface to the end user (schematic creator). This paper was a fucking goldmine.
 
 #### Conal Elliott's FRP (Functional Reactive Programming)
-*Values in the system aren't raw data — they are be "behaviours" that have continuous time semantics and are a function of the reals (time) to a value. "Events" swap which behaviours are being used at discrete moments in time.*
+*Values in the system aren't raw data — they are be "behaviours" that have continuous time semantics and are a function of the reals (because time is a real) to a value. "Events", which are discrete, swap which behaviours are in use.*
 
-This stuff isn't really implemented yet, but it's in the cards. I'm really attracted to the idea of running my simulation in continuous time. We will call them "signals" instead of "behaviours". We will use composable signals as an alternative to primitive (constant) values, where appropriate. They'll offer the benefits of the mapping/shaping functions I've been using in my audio software experiments.
+This stuff isn't really implemented yet, but it's in the cards. I'm really attracted to the idea of running my simulation in continuous time, and making time explicit, and thinking of values in the system as continuous "signals" which may be sampled at arbitrary (temporal) precision. We will call them "signals" instead of "behaviours", borrowing from Elm. They'll offer the benefits of the mapping/shaping functions I've been using in my audio software experiments.
 
 #### Rx/Elm FRP (Functional Reactive Programming)
 *Behaviours/Signals have functor-like semantics.*
@@ -34,27 +34,27 @@ Not implemented yet. I have no clue what sort of UI to supply for manipulating s
 
 ## How to talk about Entities and Facets
 
-These are a bit difficult to talk about, because they are both *conceptual* and *actual* things. It's like the difference between a class (conceptual) and an instance (actual). In our case, it's the difference between the code, and the data. Conversationally, to tell the two apart, we often refer to the data as an instance.
+These are a bit difficult to talk about, because they are both *conceptual* and *actual* things. It's like the difference between a class (conceptual) and an instance (actual). In our case, it's the difference between the code, and the data. Conversationally, to tell the two apart, we sometimes refer to the data as an instance.
 
 #### Here's what they *are* (data):
 
 An **entity** is a data structure in memory. We give entities a unique entity ID (eid), and use that for random access to them. In addition to storing their own eid, entities also contain facets.
 
-A **facet** is a data structure in memory. Their identity comes from the entity that they belong to. They are stored within the entity by type, so that we do not have duplicates.
+A **facet** is a data structure in memory. Their identity comes from the entity that they belong to, and the type of facet. They are stored within the entity by type, so that we do not have duplicates.
 
 #### Here's what they *do* (code):
 
-An entity doesn't *do* anything. It's just data. There are some functions for CRUD-like operations, but they're just for convenience.
+An entity doesn't *do* anything. It's just data. There are some functions that perform CRUD-like operations on entities, but they're just for convenience.
 
-Facets also describe their own behaviour. Each facet has a code file that includes two common interface functions. The `create` function takes some state data (of any type) that will be provided by whoever is creating the facet, and returns a facet data structure. The `render` function takes a world and a facet data structure, and returns a representation of the facet data appropriate for rendering.
+Facets do specify some behaviour. Each facet has a code file that includes two common interface functions. The `create` function takes some state data (of any type) that will be provided by whoever is creating the facet, and returns a facet data structure. The `render` function takes a world and a facet data structure, and returns a representation of the facet data appropriate for rendering to the screen. Other facets or systems will read the facet data as-needed. Updates happen by creating a new facet instance and replacing the existing instance in the entity.
 
 #### Facets are dumb
 
-It's very important to note that no code (including references to functions) is *ever* stored as part of the data of the program. All dispatch is static. The data is dumb. This lines up nicely with some of the thinking in Out of the Tar Pit, and gives us an air gap away from OOP. It means we can naively marshal the data to and from text.
+It's very important to note that no code (that is, references to functions) is *ever* stored as part of the data of the program. All dispatch is static. The data is dumb. This lines up nicely with some of the thinking in Out of the Tar Pit, and gives us an air gap away from OOP. It means we can naively marshal the data to and from text.
 
 #### Facets are confused
 
-The reason we've got two meanings for "facet" (code, and data) is to attempt to make clear the relationship between them — as counterintuitive as this may seem. If we instead went with the traditional Component VS System design, then it might be hard to tell if two systems were fighting over the same component, or it might be hard to decide where to put system behaviour that applied to only one component.
+The reason we've got two meanings for "facet" (code, and data) is to attempt to make clear the relationship between them — as counterintuitive as this may seem. If we instead went with the traditional Component VS System design, then it might be hard to tell if two systems were fighting over the same component, or it might be hard to decide where to put system behaviour that applied to only one component. But the downside to this is that a lot of facets are "pointless" (their create and/or render functions are just identity).
 
 
 #### Talking about Entities colloquially — "Is" vs "Has"
@@ -86,18 +86,23 @@ For now, we will assume one viewport, but will code as if there were more than o
 
 ### Architecture
 
-A **Viewport** is an entity with a gui/viewport facet and a pos/screen-rect facet.
+A **Viewport** is an entity with a gui/viewport facet and some sort of pos/ facet (which tells us where to put the canvases in the window).
 
-A gui/viewport facet references a **Camera** entity (which may be swapped).
+A gui/viewport facet...
+* owns a bunch of DOM canvases
+* references a **Camera** entity (which may be swapped), which determines where we're looking
+* has information about which entities to render (perhaps, which layers to render — just lines, or just cameras)
+* has information about the pitch of the grid, so it knows how far apart to render entities
 
 Cameras are just entities with a pos/ (maybe a data/name, too?).
-* So you can use any entity as a camera.
+* You can use any entity as a camera.
 * There could also be a geo/camera facet so we can see where (other) cameras are in our viewport.
+* The camera has a gui/grid facet, which uses the position of the camera to draw a grid background
 
 All renderable entities have a layer (possibly the default), which corresponds to the canvas element we use to draw it.
   Each layer is drawn (and cached) individually.
   
-  
+When rendering, we loop over all the viewports, and
   
 # TODO
   

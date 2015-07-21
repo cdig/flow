@@ -2,7 +2,6 @@
   (:require [app.undo :as undo]
             [entity.entity :as entity]
             [facet.facet :as facet]
-            [gui.grid :as grid]
             [core.math :refer [round]]))
 
 (defn save-state!
@@ -29,7 +28,7 @@
   "Returns a world."
   [world eid pos]
   (-> world
-      (facet/attach :user eid :grid-pos (pos->grid-pos pos (grid/get-pitch world)))
+      (facet/attach :user eid :grid-pos (pos->grid-pos pos 30))
       (facet/attach :user eid :circle 6)
       (facet/attach :user eid :stroke-rgb 160)))
 
@@ -47,7 +46,7 @@
   
 (defn- move-line
   [world pos]
-  (facet/attach world :user (::drawing world) :grid-pos (pos->grid-pos pos (grid/get-pitch world))))
+  (facet/attach world :user (::drawing world) :grid-pos (pos->grid-pos pos 30)))
   
 (defn- end-line
   [world]

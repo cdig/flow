@@ -1,5 +1,7 @@
-(ns gui.all
-  (:require [gui.grid :as grid]
+;; gui.all
+
+(ns hell.all
+  #_(:require [gui.grid :as grid]
             [gui.grid-cursor :as grid-cursor]))
 
 (defn setup

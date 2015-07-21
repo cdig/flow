@@ -1,6 +1,5 @@
 (ns gui.grid-cursor
   (:require [facet.facet :as facet]
-            [gui.grid :as grid]
             [core.math :refer [round]]))
 
 ;; Visibility
@@ -35,7 +34,7 @@
   (if (and (= (:mode world) :drawing)
            (or (= event-type :mouse-move) ;; We also want to add key-down here, but we need access to current mouse state.
                (= event-type :mouse-drag)))
-      (facet/attach world :gui ::grid-cursor :grid-pos (pos->grid-pos (:abs event-data) (grid/get-pitch world)))
+      (facet/attach world :gui ::grid-cursor :grid-pos (pos->grid-pos (:abs event-data) 30))
       world))
 
 ;; PUBLIC

@@ -1,6 +1,5 @@
 (ns facet.pos.grid-pos
-  (:require [facet.pos.pos :as pos]
-            [gui.grid :as grid]))
+  (:require [facet.pos.pos :as pos]))
 
 ;; PUBLIC
 
@@ -11,6 +10,6 @@
 
 (defn render
   [world state]
-  (let [pitch (grid/get-pitch world)]
+  (let [pitch 30]
     (pos/render world {:x (* pitch (:x state))
                        :y (* pitch (:y state))})))

@@ -9,6 +9,8 @@
             [logic.scale-grid :as scale-grid]
             [logic.window-size :as window-size]))
 
+(defn- safe-print [v] (print v) v)
+
 ;; PUBLIC
 
 (defn act

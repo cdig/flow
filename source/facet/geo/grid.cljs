@@ -1,9 +1,11 @@
+;; This grid has both elements of a pos and a geo, because it needs to know where it is (to do the mod offset)
+;; and it handles drawing at that position, and within its size.
+
 ;; Side Effects X
 ;; State X
 ;; Deps X
 
-(ns facet.geo.grid
-  (:require [gui.grid :as grid]))
+(ns facet.geo.grid)
 
 (defn dot-position [thickness pitch step-index offset major-every]
   (-> step-index
@@ -28,8 +30,8 @@
 
 (defn render
   [world {:keys [x y w h]}]
-  (let [pitch (grid/get-pitch world)
-        major-every (grid/get-major world)
+  (let [pitch 30
+        major-every 5
         major-size 2
         minor-size 1
         overhang (* 2 major-every)

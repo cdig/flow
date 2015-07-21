@@ -37,6 +37,10 @@
   [world entity-type eid facet-type state]
   (entity/store world entity-type eid (assoc (entity/fetch world entity-type eid) facet-type (dispatch-create facet-type state))))
 
+; (defn change
+;   [world entity-type eid facet-type function]
+;   (entity/store world entity-type eid (update (entity/fetch world entity-type eid) facet-type function)))
+
 (defn render
   [world entities]
   (map (partial entity->renderable world) (vals entities)))

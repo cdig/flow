@@ -10,7 +10,7 @@
             [browser.all :as browser]
             [debug.testem :as testem]
             [entity.entity :as entity]
-            [gui.all :as gui]
+            ; [gui.all :as gui]
             [io.events :as events]
             [logic.logics :as logics]
             ))
@@ -46,7 +46,7 @@
   (browser/setup! window)
   (-> (world/create)
       (events/setup! world/fetch #(update-world! %)) ;; Anon function makes this more reloadable for figwheel
-      gui/setup
+      ; gui/setup
       testem/setup
       world/save!)
   (undo/save! (entity/all :user (world/fetch)))
